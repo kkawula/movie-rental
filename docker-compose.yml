@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    env_file: ./.postgres.example.env
+    ports:
+      - 5432:5432
+    volumes:
+      - db:/var/lib/postgres
+      - ./db/dataset:/docker-entrypoint-initdb.d
+
+  frontend:
+    depends_on:
+      - backend
+    build: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src:/frontend/src
+      - ./frontend/public:/frontend/public
+
+  backend:
+    depends_on:
+      - db
+    build: ./backend
+    restart: unless-stopped
+    env_file: ./.backend.example.env
+    ports:
+      - 3001:3001
+      - 9299:9299
+    volumes:
+      - ./backend/src:/backend/src
+      - ./backend/package.json:/backend/package.json
+
+volumes:
+  db:
