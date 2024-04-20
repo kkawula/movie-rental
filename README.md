@@ -18,9 +18,9 @@ Planujemy wykorzystać bazę PostgreSQL, serwer Express.js z frontendem napisany
 - Dodawanie egzemplarzy danego filmu
 - Wypożyczenie egzemplarza
 - Zwrot egzemplarza
-- Logowanie zmian statusów egzemplarzy
 - Raport nieoddanych w terminie filmów
-- Raport wypożyczeń w danym miesiącu
+- Raport wypożyczeń dla filmów w danym przedziale czasowym
+- Raport wypożyczeń dla gatunków w danym przedziale czasowym
 
 ## Schemat bazy danych
 
