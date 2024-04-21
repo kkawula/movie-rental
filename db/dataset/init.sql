@@ -123,9 +123,16 @@ ALTER TABLE Rentals ADD CONSTRAINT Reservations_Users
     INITIALLY IMMEDIATE
 ;
 
-insert into Movies(title, description, imdb_rate, director, poster_url)
-values ('Pulp Fiction', 'The Best Movie.', 8.9, 'Quentin Tarantino', 'https://static.posters.cz/image/1300/plakaty/pulp-fiction-cover-i1288.jpg');
+-- insert into Movies(title, description, imdb_rate, director, poster_url)
+-- values ('Pulp Fiction', 'The Best Movie.', 8.9, 'Quentin Tarantino', 'https://static.posters.cz/image/1300/plakaty/pulp-fiction-cover-i1288.jpg');
 
 
 -- End of file.
 
+\copy Movies from '/docker-entrypoint-initdb.d/movies.csv' with delimiter ',' csv header;
+\copy Genres from '/docker-entrypoint-initdb.d/genres.csv' with delimiter ',' csv header;
+\copy MoviesGenres from '/docker-entrypoint-initdb.d/movies_genres.csv' with delimiter ',' csv header;
+\copy DVDs from '/docker-entrypoint-initdb.d/dvds.csv' with delimiter ',' csv header;
+\copy Users from '/docker-entrypoint-initdb.d/users.csv' with delimiter ',' csv header;
+\copy Rentals from '/docker-entrypoint-initdb.d/rentals.csv' with delimiter ',' csv header;
+\copy RentalsHistory from '/docker-entrypoint-initdb.d/rentals_history.csv' with delimiter ',' csv header;
