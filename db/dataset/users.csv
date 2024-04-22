@@ -1,0 +1,10 @@
+id,first_name,last_name,phone_number,mail,address
+1,"Bernard","Arnault","123456789","berand@lv.com","931-947, Fifth Street 21, Dallas, California"
+2,"Jeff","Bezos","987654321","mynameisjeff@aws.com","605-943, Fifth Street 18, San Antonio, Alaska"
+3,"Elon","Musk","456789123","musk@x.com","99-126, Eighth Street 21, San Jose, Arizona"
+4,"Bill","Gates","789123456","lizzard@microsoft.com","495-921, Fifth Street 92, Chicago, Connecticut"
+5,"Mark","Zuckerberg","321654987","mark1@facebook.com","137-828, Sixth Street 63, San Antonio, Arizona"
+6,"Steve","Jobs","654987321","apple@apple.com","216-967, Ninth Street 27, New York, Georgia"
+7,"Tim","Cook","987321654","money@icloud.com","184-169, Seventh Street 73, Philadelphia, Arkansas"
+8,"Larry","Page","654321987","larrypage@gmail.com","746-475, Fourth Street 46, San Diego, Arkansas"
+9,"Sergey","Brin","321987654","russianspy@gmail.com","153-285, Eighth Street 52, San Antonio, Georgia"
