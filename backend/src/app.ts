@@ -1,4 +1,4 @@
-import mountRoutes from './routes/index.js';
+import mountRoutes from './routes/index';
 import express from 'express';
 
 const app = express();

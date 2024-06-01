@@ -28,6 +28,7 @@ services:
     ports:
       - 3001:3001
       - 9299:9299
+      - 4983:4983
     volumes:
       - ./backend/src:/backend/src
       - ./backend/package.json:/backend/package.json
