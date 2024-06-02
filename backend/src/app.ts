@@ -1,13 +1,12 @@
-import mountRoutes from './routes/index';
-import express from 'express';
+import mountRoutes from "./routes/index";
+import express from "express";
 
 const app = express();
 
-mountRoutes(app)
+mountRoutes(app);
 
-app.get('/', function(req, res){
-   res.send("Hello world!");
+app.get("/", function (req, res) {
+  res.send("Hello world!");
 });
 
 app.listen(3001);
-
