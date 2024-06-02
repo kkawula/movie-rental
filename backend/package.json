@@ -2,21 +2,30 @@
   "name": "movie-rental-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "src/app.js",
-  "type": "module",
+  "main": "dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.js -inspect=0.0.0.0:9229"
+    "build": "tsc --build",
+    "start": "node dist/app.js",
+    "dev": "nodemon src/app.ts -inspect=0.0.0.0:9229",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "nodemon src/migrate.ts -inspect=0.0.0.0:9229"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "drizzle-orm": "^0.31.0",
     "express": "^4.19.2",
     "express-promise-router": "^4.1.1",
     "pg": "^8.11.5"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "@types/express": "^4.17.21",
+    "@types/pg": "^8.11.6",
+    "drizzle-kit": "^0.22.1",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }
