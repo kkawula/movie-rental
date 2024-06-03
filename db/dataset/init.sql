@@ -234,3 +234,11 @@ copy "DVDs" from '/docker-entrypoint-initdb.d/dvds.csv' with delimiter ',' csv h
 copy "Users" from '/docker-entrypoint-initdb.d/users.csv' with delimiter ',' csv header;
 copy "Rentals" from '/docker-entrypoint-initdb.d/rentals.csv' with delimiter ',' csv header;
 copy "RentalsHistory" from '/docker-entrypoint-initdb.d/rentals_history.csv' with delimiter ',' csv header;
+
+-- Set sequences to proper values (they are not set automatically after import from CSV)
+SELECT setval('"Movies_id_seq"', 15, true); 
+SELECT setval('"Genres_id_seq"', 10, true); 
+SELECT setval('"DVDs_id_seq"', 40, true); 
+SELECT setval('"Users_id_seq"', 9, true); 
+SELECT setval('"Movies_id_seq"', 15, true); 
+SELECT setval('"Rentals_id_seq"', 402, true); 
