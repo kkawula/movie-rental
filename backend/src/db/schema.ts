@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   pgTable,
   serial,
@@ -108,3 +109,59 @@ export type NewRentalHistory = typeof rentalshistory.$inferInsert;
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
+
+export const movieRelations = relations(movies, ({ many }) => ({
+  dvds: many(dvds),
+  moviesgenres: many(moviesgenres)
+}))
+
+export const genresRelations = relations(genres, ({ many }) => ({
+  moviesgenres: many(moviesgenres)
+}))
+
+export const moviesgenresRelations = relations(moviesgenres, ({ one }) => ({
+  movie: one(movies, {
+    fields: [moviesgenres.movie_id],
+    references: [movies.id]
+  }),
+  genre: one(genres, {
+    fields: [moviesgenres.genre_id],
+    references: [genres.id]
+  })
+}))
+
+export const dvdsRelations = relations(dvds, ({ one, many }) => ({
+  movies: one(movies, {
+    fields: [dvds.movie_id],
+    references: [movies.id]
+  }),
+  rentals: many(rentals),
+  rentalshistory: many(rentalshistory)
+}))
+
+export const rentalsRelations = relations(rentals, ({ one }) => ({
+  dvd: one(dvds, {
+    fields: [rentals.dvd_id],
+    references: [dvds.id]
+  }),
+  user: one(users, {
+    fields: [rentals.user_id],
+    references: [users.id]
+  })
+}))
+
+export const rentalshistoryRelations = relations(rentalshistory, ({ one }) => ({
+  dvd: one(dvds, {
+    fields: [rentalshistory.dvd_id],
+    references: [dvds.id]
+  }),
+  user: one(users, {
+    fields: [rentalshistory.user_id],
+    references: [users.id]
+  })
+}))
+
+export const usersRelations = relations(users, ({ many }) => ({
+  rentals: many(rentals),
+  rentalshistory: many(rentalshistory)
+}))
