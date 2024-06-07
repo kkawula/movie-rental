@@ -4,7 +4,7 @@ import {
   postDVD,
   getDVD,
   updateDVD,
-  getMovieDVDs,
+  // getMovieDVDs,
 } from "../handlers/dvds";
 
 const router = Router();

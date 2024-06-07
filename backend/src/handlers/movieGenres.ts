@@ -18,14 +18,21 @@ export async function getMovieGenres(req: Request, res: Response) {
   }
 }
 
+// TODO: change to PUT on movie
 export async function postMovieGenre(req: Request, res: Response) {
   const { movieId } = req.params;
   const newGenre: number = req.body.genre_id;
 
-  await db
-    .insert(moviesgenres)
-    .values({ movie_id: Number(movieId), genre_id: Number(newGenre) })
-    .returning();
+  try {
+    let addedMovieGenre = await db
+      .insert(moviesgenres)
+      .values({ movie_id: Number(movieId), genre_id: Number(newGenre) })
+      .returning();
+    res.send(addedMovieGenre);
+  } catch (err) {
+    res.status(500).send("Error with adding genre to movie");
+  }
+
 }
 
 export async function deleteMovieGenre(req: Request, res: Response) {
