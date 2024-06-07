@@ -27,8 +27,8 @@ export async function postMovie(req: Request, res: Response) {
   const newMovie: NewMovie = req.body;
 
   try {
-    await db.insert(movies).values(newMovie);
-    res.send("Movie added");
+    let addedMovie = await db.insert(movies).values(newMovie).returning();
+    res.send(addedMovie);
   } catch (err) {
     res.status(500).send("Error adding movie");
   }
@@ -39,11 +39,12 @@ export async function updateMovie(req: Request, res: Response) {
   const updateFields: Partial<NewMovie> = req.body;
 
   try {
-    await db
+    let updatedMovie = await db
       .update(movies)
       .set(updateFields)
-      .where(eq(movies.id, Number(id)));
-    res.send("Movie updated");
+      .where(eq(movies.id, Number(id)))
+      .returning();
+    res.send(updatedMovie);
   } catch (err) {
     res.status(500).send("Error updating movie");
   }

@@ -26,7 +26,12 @@ export async function getGenres(req: Request, res: Response) {
 export async function postGenre(req: Request, res: Response) {
   const newGenre: NewGenre = req.body;
 
-  await db.insert(genres).values(newGenre).returning();
+  try {
+    let addedGenre = await db.insert(genres).values(newGenre).returning();
+    res.send(addedGenre);
+  } catch (err) {
+    res.status(500).send("Error adding user");
+  }
 }
 
 export async function updateGenre(req: Request, res: Response) {
@@ -34,11 +39,12 @@ export async function updateGenre(req: Request, res: Response) {
   const updateFields: Partial<NewGenre> = req.body;
 
   try {
-    await db
+    let updatedGenre = await db
       .update(genres)
       .set(updateFields)
-      .where(eq(genres.id, Number(id)));
-    res.send("Genre updated");
+      .where(eq(genres.id, Number(id)))
+      .returning();
+    res.send(updatedGenre);
   } catch (err) {
     res.status(500).send("Error updating genre");
   }

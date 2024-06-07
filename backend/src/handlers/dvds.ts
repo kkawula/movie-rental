@@ -7,11 +7,15 @@ export async function getDVDs(req: Request, res: Response) {
   const { movie_id } = req.query;
 
   if (movie_id) {
-    let movieDVDs: DVD[] = await db
+    try {
+      let movieDVDs: DVD[] = await db
       .select()
       .from(dvds)
       .where(eq(dvds.movie_id, Number(movie_id)));
-    res.send(movieDVDs);
+      res.send(movieDVDs);
+    } catch (err) {
+      res.status(500).send("Invalid movie_id");
+    }
   } else {
     let allDVDs: DVD[] = await db.select().from(dvds);
     res.send(allDVDs);
@@ -22,8 +26,8 @@ export async function postDVD(req: Request, res: Response) {
   const movie_id: number = req.body.movie_id;
 
   try {
-    await db.insert(dvds).values({ movie_id: movie_id });
-    res.send("DVD added");
+    let addedDVD = await db.insert(dvds).values({ movie_id: movie_id }).returning();
+    res.send(addedDVD);
   } catch (err) {
     res.status(500).send("Error adding DVD");
   }
@@ -49,11 +53,12 @@ export async function updateDVD(req: Request, res: Response) {
   const updateFields: Partial<DVD> = req.body;
 
   try {
-    await db
+    let updatedDVD = await db
       .update(dvds)
       .set(updateFields)
-      .where(eq(dvds.id, Number(id)));
-    res.send("DVD updated");
+      .where(eq(dvds.id, Number(id)))
+      .returning();
+    res.send(updatedDVD);
   } catch (err) {
     res.status(500).send("Error updating DVD");
   }
@@ -72,13 +77,13 @@ export async function updateDVD(req: Request, res: Response) {
 //   }
 // }
 
-export async function getMovieDVDs(req: Request, res: Response) {
-  const { movie_id } = req.query;
+// export async function getMovieDVDs(req: Request, res: Response) {
+//   const { movie_id } = req.query;
 
-  let movieDVDs: DVD[] = await db
-    .select()
-    .from(dvds)
-    .where(eq(dvds.movie_id, Number(movie_id)));
+//   let movieDVDs: DVD[] = await db
+//     .select()
+//     .from(dvds)
+//     .where(eq(dvds.movie_id, Number(movie_id)));
 
-  res.send(movieDVDs);
-}
+//   res.send(movieDVDs);
+// }

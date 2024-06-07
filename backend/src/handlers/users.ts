@@ -12,8 +12,8 @@ export async function postUser(req: Request, res: Response) {
   const newUser: NewUser = req.body;
 
   try {
-    await db.insert(users).values(newUser);
-    res.send("User added");
+    let addedUser = await db.insert(users).values(newUser).returning();
+    res.send(addedUser);
   } catch (err) {
     res.status(500).send("Error adding user");
   }
@@ -39,11 +39,12 @@ export async function updateUser(req: Request, res: Response) {
   const updateFields: Partial<NewUser> = req.body;
 
   try {
-    await db
+    let updatedUser = await db
       .update(users)
       .set(updateFields)
-      .where(eq(users.id, Number(id)));
-    res.send("User updated");
+      .where(eq(users.id, Number(id)))
+      .returning();
+    res.send(updatedUser);
   } catch (err) {
     res.status(500).send("Error updating user");
   }
