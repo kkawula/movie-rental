@@ -1,7 +1,7 @@
 import { Request, Response } from "express-serve-static-core";
 import { db } from "../db";
 import { eq, and } from "drizzle-orm";
-import { moviesgenres, genres, NewMovieGenre } from "../db/schema";
+import { moviesgenres, genres, Genre } from "../db/schema";
 
 export async function getMovieGenres(req: Request, res: Response) {
   const { movieId } = req.params;
@@ -18,21 +18,18 @@ export async function getMovieGenres(req: Request, res: Response) {
   }
 }
 
-// TODO: change to PUT on movie
-export async function postMovieGenre(req: Request, res: Response) {
-  const { movieId } = req.params;
-  const newGenre: number = req.body.genre_id;
+export async function putMovieGenre(req: Request, res: Response) {
+  const { movieId, genreId } = req.params;
 
   try {
     let addedMovieGenre = await db
       .insert(moviesgenres)
-      .values({ movie_id: Number(movieId), genre_id: Number(newGenre) })
+      .values({ movie_id: Number(movieId), genre_id: Number(genreId) })
       .returning();
     res.send(addedMovieGenre);
   } catch (err) {
     res.status(500).send("Error with adding genre to movie");
   }
-
 }
 
 export async function deleteMovieGenre(req: Request, res: Response) {
