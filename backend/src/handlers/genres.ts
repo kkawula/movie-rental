@@ -1,7 +1,7 @@
 import { Request, Response } from "express-serve-static-core";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
-import { Genre, genres } from "../db/schema";
+import { Genre, NewGenre, genres } from "../db/schema";
 
 export async function getGenre(req: Request, res: Response) {
   const { id } = req.params;
@@ -24,19 +24,14 @@ export async function getGenres(req: Request, res: Response) {
 }
 
 export async function postGenre(req: Request, res: Response) {
-  const newGenre: Genre = req.body;
+  const newGenre: NewGenre = req.body;
 
-  try {
-    await db.insert(genres).values(newGenre);
-    res.send("Genre added");
-  } catch (err) {
-    res.status(500).send("Error adding genre");
-  }
+  await db.insert(genres).values(newGenre).returning();
 }
 
 export async function updateGenre(req: Request, res: Response) {
   const { id } = req.params;
-  const updateFields: Partial<Genre> = req.body;
+  const updateFields: Partial<NewGenre> = req.body;
 
   try {
     await db

@@ -20,42 +20,12 @@ export async function getMovieGenres(req: Request, res: Response) {
 
 export async function postMovieGenre(req: Request, res: Response) {
   const { movieId } = req.params;
-  const newMovieGneres: number[] = req.body.newMovieGenres;
-  console.log(newMovieGneres);
+  const newGenre: number = req.body.genre_id;
 
-  newMovieGneres.forEach(async (genreId: number) => {
-    try {
-      await db
-        .insert(moviesgenres)
-        .values({ movie_id: Number(movieId), genre_id: genreId });
-      res.send("Genre added to movie");
-    } catch (err) {
-      res.status(500).send("Error adding genre to movie");
-    }
-  });
-}
-
-export async function getMovieGenre(req: Request, res: Response) {
-  const { movieId, genreId } = req.params;
-
-  try {
-    const result = await db
-      .select()
-      .from(moviesgenres)
-      .leftJoin(genres, eq(moviesgenres.genre_id, genres.id))
-      .where(
-        and(
-          eq(moviesgenres.movie_id, Number(movieId)),
-          eq(genres.id, Number(genreId))
-        )
-      );
-    if (result.length === 0) {
-      res.status(404).send("Genre not found for movie");
-    }
-    res.send(result[0].Genres?.name);
-  } catch (err) {
-    res.status(500).send("Error getting movie genre");
-  }
+  await db
+    .insert(moviesgenres)
+    .values({ movie_id: Number(movieId), genre_id: Number(newGenre) })
+    .returning();
 }
 
 export async function deleteMovieGenre(req: Request, res: Response) {

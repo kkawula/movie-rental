@@ -1,7 +1,7 @@
 import { Request, Response } from "express-serve-static-core";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
-import { users, User } from "../db/schema";
+import { users, User, NewUser } from "../db/schema";
 
 export async function getUsers(req: Request, res: Response) {
   let allUsers: User[] = await db.select().from(users);
@@ -9,7 +9,7 @@ export async function getUsers(req: Request, res: Response) {
 }
 
 export async function postUser(req: Request, res: Response) {
-  const newUser: User = req.body;
+  const newUser: NewUser = req.body;
 
   try {
     await db.insert(users).values(newUser);
@@ -36,7 +36,7 @@ export async function getUser(req: Request, res: Response) {
 
 export async function updateUser(req: Request, res: Response) {
   const { id } = req.params;
-  const updateFields: Partial<User> = req.body;
+  const updateFields: Partial<NewUser> = req.body;
 
   try {
     await db
