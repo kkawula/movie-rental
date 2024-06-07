@@ -4,8 +4,18 @@ import { eq } from "drizzle-orm";
 import { DVD, dvds } from "../db/schema";
 
 export async function getDVDs(req: Request, res: Response) {
-  let allDVDs: DVD[] = await db.select().from(dvds);
-  res.send(allDVDs);
+  const { movie_id } = req.query;
+
+  if (movie_id) {
+    let movieDVDs: DVD[] = await db
+      .select()
+      .from(dvds)
+      .where(eq(dvds.movie_id, Number(movie_id)));
+    res.send(movieDVDs);
+  } else {
+    let allDVDs: DVD[] = await db.select().from(dvds);
+    res.send(allDVDs);
+  }
 }
 
 export async function postDVD(req: Request, res: Response) {

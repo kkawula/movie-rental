@@ -16,6 +16,4 @@ router.get("/:id", getDVD);
 router.patch("/:id", updateDVD);
 // router.delete("/:id", deleteDVD);
 
-router.get("/?movie_id=:movie_id", getMovieDVDs);
-
 export default router;
