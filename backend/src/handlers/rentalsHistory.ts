@@ -1,7 +1,7 @@
 import { Request, Response } from "express-serve-static-core";
 import { db } from "../db";
-import { eq, lt, gt, and } from "drizzle-orm";
-import { RentalHistory, rentalshistory, dvds } from "../db/schema";
+import { eq, lt, gt, and, lte, SQLWrapper } from "drizzle-orm";
+import { RentalHistory, rentalshistory, dvds, rentals } from "../db/schema";
 
 export async function getHistoricalRental(req: Request, res: Response) {
   const { id } = req.params;
@@ -18,51 +18,38 @@ export async function getHistoricalRental(req: Request, res: Response) {
 
 export async function getHistoricalRentals(req: Request, res: Response) {
   const { late, user_id, dvd_id, movie_id } = req.query;
-  // I don't know how to combine these two queries
+  const columns = {
+    id: rentalshistory.id,
+    user_id: rentalshistory.user_id,
+    dvd_id: rentalshistory.dvd_id,
+    rental_date: rentalshistory.rental_date,
+    return_deadline: rentalshistory.return_deadline,
+    returned_date: rentalshistory.returned_date
+  }
 
-  if (movie_id) {
-    try {
-      let query = await db
-        .select()
-        .from(rentalshistory)
-        .leftJoin(dvds, eq(rentalshistory.dvd_id, dvds.id))
-        .where(
-          and(
-            late
-              ? late === "true"
-                ? gt(
-                    rentalshistory.returned_date,
-                    rentalshistory.return_deadline
-                  )
-                : lt(
-                    rentalshistory.returned_date,
-                    rentalshistory.return_deadline
-                  )
-              : undefined,
-            user_id ? eq(rentalshistory.user_id, Number(user_id)) : undefined,
-            dvd_id ? eq(rentalshistory.dvd_id, Number(dvd_id)) : undefined,
-            movie_id ? eq(dvds.movie_id, Number(movie_id)) : undefined
-          )
-        );
-      res.send(query);
-    } catch (e) {
-      res.status(400).send("Error getting historical rentals");
+  try {
+    let query = db.select(columns).from(rentalshistory);
+    const filters: SQLWrapper[] = [];
+    
+    if (movie_id) {
+      query.leftJoin(dvds, eq(rentalshistory.dvd_id, dvds.id));
+      filters.push(eq(dvds.movie_id, Number(movie_id)));
     }
-  } else {
-    let query: RentalHistory[] = await db
-      .select()
-      .from(rentalshistory)
-      .where(
-        and(
-          late
-            ? late === "true"
-              ? gt(rentalshistory.returned_date, rentalshistory.return_deadline)
-              : lt(rentalshistory.returned_date, rentalshistory.return_deadline)
-            : undefined,
-          user_id ? eq(rentalshistory.user_id, Number(user_id)) : undefined,
-          dvd_id ? eq(rentalshistory.dvd_id, Number(dvd_id)) : undefined
-        )
-      );
-    res.send(query);
+    if (late === "true") {
+      filters.push(gt(rentalshistory.returned_date, rentalshistory.return_deadline));
+    } else if (late === "false") {
+      filters.push(lte(rentalshistory.returned_date, rentalshistory.return_deadline));
+    }
+    if (user_id) {
+      filters.push(eq(rentalshistory.user_id, Number(user_id)));
+    }
+    if (dvd_id) {
+      filters.push(eq(rentalshistory.dvd_id, Number(dvd_id)))
+    }
+    
+    let requestedRentals = await query.where(and(...filters));
+    res.send(requestedRentals);
+  } catch (err) {
+    res.status(500).send("Error fetching rentals history");
   }
 }
