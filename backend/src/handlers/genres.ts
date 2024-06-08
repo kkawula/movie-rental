@@ -6,21 +6,30 @@ import { Genre, NewGenre, genres } from "../db/schema";
 export async function getGenre(req: Request, res: Response) {
   const { id } = req.params;
 
-  let genre: Genre[] = await db
+  try {
+    let genre: Genre[] = await db
     .select()
     .from(genres)
     .where(eq(genres.id, Number(id)));
 
-  if (genre.length > 0) {
-    res.send(genre[0]);
-  } else {
-    res.status(404).send("Genre not found");
+    if (genre.length > 0) {
+      res.send(genre[0]);
+    } else {
+      res.status(404).send("Genre not found");
+    }
+  } catch (err) {
+    res.status(500).send("Error fetching genre");
   }
 }
 
 export async function getGenres(req: Request, res: Response) {
   let allGenres: Genre[] = await db.select().from(genres);
-  res.send(allGenres);
+
+  try {
+    res.send(allGenres);
+  } catch (err) {
+    res.status(500).send("Error fetching genres");
+  }
 }
 
 export async function postGenre(req: Request, res: Response) {

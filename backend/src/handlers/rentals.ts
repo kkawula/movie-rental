@@ -86,7 +86,11 @@ export async function getRental(req: Request, res: Response) {
       .from(rentals)
       .where(eq(rentals.id, Number(id)));
 
-    res.send(rental);
+    if (rental.length > 0) {
+      res.send(rental[0]);
+    } else {
+      res.status(404).send("Rental not found");
+    }
   } catch (error) {
     res.status(500).send("Error retrieving rental");
   }
