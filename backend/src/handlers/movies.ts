@@ -1,7 +1,7 @@
 import { Request, Response } from "express-serve-static-core";
 import { db } from "../db";
-import { Movie, NewMovie, movies, moviesgenres } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { Movie, NewMovie, movies, moviesAvailabilityView } from "../db/schema";
+import { SQLWrapper, eq, and, ilike, gte, lte, gt, desc } from "drizzle-orm";
 
 export async function getMovie(req: Request, res: Response) {
   const { id } = req.params;
@@ -19,8 +19,48 @@ export async function getMovie(req: Request, res: Response) {
 }
 
 export async function getMovies(req: Request, res: Response) {
-  let allMovies: Movie[] = await db.select().from(movies);
-  res.send(allMovies);
+  // TODO: what about genre_id? -> allow multiple?
+  const { availability, title, description, imdb_gte, imdb_lte, director } = req.query; 
+  const moviesAvailabilityColumns = {
+    id: moviesAvailabilityView.id,
+    title: moviesAvailabilityView.title,
+    description: moviesAvailabilityView.description,
+    imdb_rate: moviesAvailabilityView.imdb_rate,
+    director: moviesAvailabilityView.director,
+    poster_url: moviesAvailabilityView.poster_url
+  }
+  
+  let query;
+  const filters: SQLWrapper[] = [];
+
+  if (availability === "true") {
+    query = db.select(moviesAvailabilityColumns).from(moviesAvailabilityView);
+    filters.push(gt(moviesAvailabilityView.available, 0));
+  } else if (availability === "false") {
+    query = db.select(moviesAvailabilityColumns).from(moviesAvailabilityView);
+    filters.push(eq(moviesAvailabilityView.available, 0));
+  } else {
+    query = db.select().from(movies);
+  }
+
+  if (title) {
+    filters.push(ilike(movies.title, `%${title}%`));
+  }
+  if (description) {
+    filters.push(ilike(movies.description, `%${description}%`));
+  }
+  if (director) {
+    filters.push(ilike(movies.director, `%${director}%`));
+  }
+  if (imdb_gte) {
+    filters.push(gte(movies.imdb_rate, imdb_gte.toString()));
+  }
+  if (imdb_lte) {
+    filters.push(lte(movies.imdb_rate, imdb_lte.toString()));
+  }
+
+  let requestedMovies: Movie[] = await query.where(and(...filters));
+  res.send(requestedMovies);
 }
 
 export async function postMovie(req: Request, res: Response) {
@@ -50,15 +90,13 @@ export async function updateMovie(req: Request, res: Response) {
   }
 }
 
-// TODO: Implement deleteMovie
+export async function deleteMovie(req: Request, res: Response) {
+  const { id } = req.params;
 
-// export async function deleteMovie(req: Request, res: Response) {
-//   const { id } = req.params;
-
-//   try {
-//     await db.delete(movies).where(eq(movies.id, Number(id)));
-//     res.send("Movie deleted");
-//   } catch (err) {
-//     res.status(500).send("Error deleting movie");
-//   }
-// }
+  try {
+    await db.delete(movies).where(eq(movies.id, Number(id)));
+    res.send("Movie deleted");
+  } catch (err) {
+    res.status(500).send("Error deleting movie");
+  }
+}

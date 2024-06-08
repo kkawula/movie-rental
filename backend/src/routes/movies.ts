@@ -4,7 +4,7 @@ import {
   getMovies,
   postMovie,
   updateMovie,
-  // deleteMovie,
+  deleteMovie,
 } from "../handlers/movies";
 
 import {
@@ -20,7 +20,7 @@ router.post("/", postMovie);
 
 router.get("/:id", getMovie);
 router.patch("/:id", updateMovie);
-// router.delete("/:id", deleteMovie);
+router.delete("/:id", deleteMovie);
 
 router.get("/:movieId/genres", getMovieGenres);
 
