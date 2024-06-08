@@ -22,15 +22,19 @@ export async function postUser(req: Request, res: Response) {
 export async function getUser(req: Request, res: Response) {
   const { id } = req.params;
 
-  let user: User[] = await db
+  try {
+    let user: User[] = await db
     .select()
     .from(users)
     .where(eq(users.id, Number(id)));
 
-  if (user.length > 0) {
-    res.send(user[0]);
-  } else {
-    res.status(404).send("User not found");
+    if (user.length > 0) {
+      res.send(user[0]);
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (err) {
+    res.status(500).send("Error fetching user")
   }
 }
 

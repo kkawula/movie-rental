@@ -5,14 +5,18 @@ import { RentalHistory, rentalshistory, dvds, rentals } from "../db/schema";
 
 export async function getHistoricalRental(req: Request, res: Response) {
   const { id } = req.params;
-  const query: RentalHistory[] = await db
+  try {
+    const query: RentalHistory[] = await db
     .select()
     .from(rentalshistory)
     .where(eq(rentalshistory.id, Number(id)));
-  if (query.length === 0) {
-    res.status(404).send("Rental not found");
-  } else {
-    res.send(query[0]);
+    if (query.length === 0) {
+      res.status(404).send("Rental not found");
+    } else {
+      res.send(query[0]);
+    }
+  } catch (err) {
+    res.status(500).send("Error fetching rental history");
   }
 }
 

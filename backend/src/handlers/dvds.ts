@@ -17,8 +17,12 @@ export async function getDVDs(req: Request, res: Response) {
       res.status(500).send("Invalid movie_id");
     }
   } else {
-    let allDVDs: DVD[] = await db.select().from(dvds);
-    res.send(allDVDs);
+    try {
+      let allDVDs: DVD[] = await db.select().from(dvds);
+      res.send(allDVDs);
+    } catch (err) {
+      res.status(500).send("Error fetching DVDs");
+    }
   }
 }
 
@@ -36,15 +40,19 @@ export async function postDVD(req: Request, res: Response) {
 export async function getDVD(req: Request, res: Response) {
   const { id } = req.params;
 
-  let dvd: DVD[] = await db
+  try {
+    let dvd: DVD[] = await db
     .select()
     .from(dvds)
     .where(eq(dvds.id, Number(id)));
 
-  if (dvd.length > 0) {
-    res.send(dvd[0]);
-  } else {
-    res.status(404).send("DVD not found");
+    if (dvd.length > 0) {
+      res.send(dvd[0]);
+    } else {
+      res.status(404).send("DVD not found");
+    }
+  } catch (err) {
+    res.status(500).send("Error fetching DVD");
   }
 }
 
