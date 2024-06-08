@@ -50,15 +50,13 @@ export async function updateGenre(req: Request, res: Response) {
   }
 }
 
-// TODO: Implement deleteGenre
+export async function deleteGenre(req: Request, res: Response) {
+  const { id } = req.params;
 
-// export async function deleteGenre(req: Request, res: Response) {
-//   const { id } = req.params;
-
-//   try {
-//     await db.delete(genres).where(eq(genres.id, Number(id)));
-//     res.send("Genre deleted");
-//   } catch (err) {
-//     res.status(500).send("Error deleting genre");
-//   }
-// }
+  try {
+    await db.delete(genres).where(eq(genres.id, Number(id)));
+    res.send("Genre deleted");
+  } catch (err) {
+    res.status(500).send("Error deleting genre");
+  }
+}

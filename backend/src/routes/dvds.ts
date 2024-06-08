@@ -4,7 +4,7 @@ import {
   postDVD,
   getDVD,
   updateDVD,
-  // getMovieDVDs,
+  deleteDVD,
 } from "../handlers/dvds";
 
 const router = Router();
@@ -14,6 +14,6 @@ router.post("/", postDVD);
 
 router.get("/:id", getDVD);
 router.patch("/:id", updateDVD);
-// router.delete("/:id", deleteDVD);
+router.delete("/:id", deleteDVD);
 
 export default router;

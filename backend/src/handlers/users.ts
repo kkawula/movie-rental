@@ -50,15 +50,13 @@ export async function updateUser(req: Request, res: Response) {
   }
 }
 
-// TODO: Implement deleteUser
+export async function deleteUser(req: Request, res: Response) {
+  const { id } = req.params;
 
-// export async function deleteUser(req: Request, res: Response) {
-//   const { id } = req.params;
-
-//   try {
-//     await db.delete(users).where(eq(users.id, Number(id)));
-//     res.send("User deleted");
-//   } catch (err) {
-//     res.status(500).send("Error deleting user");
-//   }
-// }
+  try {
+    await db.delete(users).where(eq(users.id, Number(id)));
+    res.send("User deleted");
+  } catch (err) {
+    res.status(500).send("Error deleting user");
+  }
+}

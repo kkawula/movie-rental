@@ -4,7 +4,7 @@ import {
   postUser,
   getUsers,
   updateUser,
-  // deleteUser,
+  deleteUser,
 } from "../handlers/users";
 const router = Router();
 
@@ -13,6 +13,6 @@ router.post("/", postUser);
 
 router.get("/:id", getUser);
 router.patch("/:id", updateUser);
-// router.delete("/:id", deleteUser);
+router.delete("/:id", deleteUser);
 
 export default router;

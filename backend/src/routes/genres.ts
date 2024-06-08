@@ -4,7 +4,7 @@ import {
   postGenre,
   getGenre,
   updateGenre,
-  // deleteGenre,
+  deleteGenre,
 } from "../handlers/genres";
 
 const router = Router();
@@ -14,6 +14,6 @@ router.post("/", postGenre);
 
 router.get("/:id", getGenre);
 router.patch("/:id", updateGenre);
-// router.delete("/:id", deleteGenre);
+router.delete("/:id", deleteGenre);
 
 export default router;

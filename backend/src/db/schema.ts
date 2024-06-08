@@ -8,6 +8,8 @@ import {
   decimal,
   date,
   primaryKey,
+  pgView,
+  bigint,
 } from "drizzle-orm/pg-core";
 
 // Define DVDs table
@@ -165,3 +167,15 @@ export const usersRelations = relations(users, ({ many }) => ({
   rentals: many(rentals),
   rentalshistory: many(rentalshistory)
 }))
+
+export const moviesAvailabilityView = pgView("MoviesAvailability", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 128 }).notNull(),
+  description: text("description").notNull(),
+  imdb_rate: decimal("imdb_rate", { precision: 2, scale: 1 }).notNull(),
+  director: varchar("director", { length: 256 }).notNull(),
+  poster_url: varchar("poster_url", { length: 256 }).notNull(),
+  no_dvds: bigint("no_dvds", { mode: "number" }).notNull(),
+  rented: bigint("rented", { mode: "number" }).notNull(),
+  available: bigint("available", { mode: "number" }).notNull()
+}).existing();

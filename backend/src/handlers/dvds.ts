@@ -64,26 +64,13 @@ export async function updateDVD(req: Request, res: Response) {
   }
 }
 
-// TODO: Implement deleteDVD
+export async function deleteDVD(req: Request, res: Response) {
+  const { id } = req.params;
 
-// export async function deleteDVD(req: Request, res: Response) {
-//   const { id } = req.params;
-
-//   try {
-//     await db.delete(dvds).where(eq(dvds.id, Number(id)));
-//     res.send("DVD deleted");
-//   } catch (err) {
-//     res.status(500).send("Error deleting DVD");
-//   }
-// }
-
-// export async function getMovieDVDs(req: Request, res: Response) {
-//   const { movie_id } = req.query;
-
-//   let movieDVDs: DVD[] = await db
-//     .select()
-//     .from(dvds)
-//     .where(eq(dvds.movie_id, Number(movie_id)));
-
-//   res.send(movieDVDs);
-// }
+  try {
+    await db.delete(dvds).where(eq(dvds.id, Number(id)));
+    res.send("DVD deleted");
+  } catch (err) {
+    res.status(500).send("Error deleting DVD");
+  }
+}

@@ -227,6 +227,14 @@ END $$;
 
 commit;
 
+create or replace view "MoviesAvailability"
+as
+select M.id, title, description, imdb_rate, director, poster_url, count(DD.id) "no_dvds", count(R.dvd_id) "rented", count(DD.id) - count(R.dvd_id) "available"
+from "Movies" M
+left join public."DVDs" DD on M.id = DD.movie_id
+left join public."Rentals" R on DD.id = R.dvd_id
+group by m.id, m.title;
+
 copy "Movies" from '/docker-entrypoint-initdb.d/movies.csv' with delimiter ',' csv header;
 copy "Genres" from '/docker-entrypoint-initdb.d/genres.csv' with delimiter ',' csv header;
 copy "MoviesGenres" from '/docker-entrypoint-initdb.d/movies_genres.csv' with delimiter ',' csv header;
