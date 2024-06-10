@@ -134,7 +134,8 @@ begin;
 
 CREATE TABLE IF NOT EXISTS "DVDs" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"movie_id" integer NOT NULL
+	"movie_id" integer NOT NULL,
+	"rentable" boolean DEFAULT true NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Genres" (
@@ -190,13 +191,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "MoviesGenres" ADD CONSTRAINT "MoviesGenres_movie_id_Movies_id_fk" FOREIGN KEY ("movie_id") REFERENCES "public"."Movies"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "MoviesGenres" ADD CONSTRAINT "MoviesGenres_movie_id_Movies_id_fk" FOREIGN KEY ("movie_id") REFERENCES "public"."Movies"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "MoviesGenres" ADD CONSTRAINT "MoviesGenres_genre_id_Genres_id_fk" FOREIGN KEY ("genre_id") REFERENCES "public"."Genres"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "MoviesGenres" ADD CONSTRAINT "MoviesGenres_genre_id_Genres_id_fk" FOREIGN KEY ("genre_id") REFERENCES "public"."Genres"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -225,15 +226,42 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 
+
 commit;
 
 create or replace view "MoviesAvailability"
 as
-select M.id, title, description, imdb_rate, director, poster_url, count(DD.id) "no_dvds", count(R.dvd_id) "rented", count(DD.id) - count(R.dvd_id) "available"
-from "Movies" M
-left join public."DVDs" DD on M.id = DD.movie_id
-left join public."Rentals" R on DD.id = R.dvd_id
-group by m.id, m.title;
+select
+    total_movies.id,
+    total_movies.title,
+    total_movies.description,
+    total_movies.imdb_rate,
+    total_movies.director,
+    total_movies.poster_url,
+    total_movies.no_dvds,
+    total_movies.rented,
+    coalesce(rentable_movies.available, 0) as available
+from (
+	SELECT m.id,
+		m.title,
+		m.description,
+		m.imdb_rate,
+		m.director,
+		m.poster_url,
+		count(dd.id)                   AS no_dvds,
+		count(r.dvd_id)                AS rented
+	FROM "Movies" m
+			LEFT JOIN "DVDs" dd ON m.id = dd.movie_id
+			LEFT JOIN "Rentals" r ON dd.id = r.dvd_id
+	GROUP BY m.id, m.title) as total_movies
+left join (
+	SELECT m.id,
+		count(dd.id) - count(r.dvd_id) AS available
+	FROM "Movies" m
+			LEFT JOIN "DVDs" dd ON m.id = dd.movie_id
+			LEFT JOIN "Rentals" r ON dd.id = r.dvd_id
+	WHERE dd.rentable = TRUE
+	GROUP BY m.id) as rentable_movies on total_movies.id = rentable_movies.id;
 
 copy "Movies" from '/docker-entrypoint-initdb.d/movies.csv' with delimiter ',' csv header;
 copy "Genres" from '/docker-entrypoint-initdb.d/genres.csv' with delimiter ',' csv header;

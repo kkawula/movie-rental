@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS "DVDs" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"movie_id" integer NOT NULL
+	"movie_id" integer NOT NULL,
+	"rentable" boolean DEFAULT true NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "Genres" (
@@ -56,13 +57,13 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "MoviesGenres" ADD CONSTRAINT "MoviesGenres_movie_id_Movies_id_fk" FOREIGN KEY ("movie_id") REFERENCES "public"."Movies"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "MoviesGenres" ADD CONSTRAINT "MoviesGenres_movie_id_Movies_id_fk" FOREIGN KEY ("movie_id") REFERENCES "public"."Movies"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "MoviesGenres" ADD CONSTRAINT "MoviesGenres_genre_id_Genres_id_fk" FOREIGN KEY ("genre_id") REFERENCES "public"."Genres"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "MoviesGenres" ADD CONSTRAINT "MoviesGenres_genre_id_Genres_id_fk" FOREIGN KEY ("genre_id") REFERENCES "public"."Genres"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
