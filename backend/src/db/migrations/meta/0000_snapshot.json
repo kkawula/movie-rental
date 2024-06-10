@@ -1,5 +1,5 @@
 {
-  "id": "632847a0-d1e4-4eed-b345-04962c5d9bbf",
+  "id": "28632af8-d8d9-4447-aec5-651d548850e6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -19,6 +19,13 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true
+        },
+        "rentable": {
+          "name": "rentable",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
         }
       },
       "indexes": {},
@@ -137,7 +144,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "MoviesGenres_genre_id_Genres_id_fk": {
@@ -150,7 +157,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },

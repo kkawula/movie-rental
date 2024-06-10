@@ -10,6 +10,7 @@ import {
   primaryKey,
   pgView,
   bigint,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 // Define DVDs table
@@ -18,6 +19,7 @@ export const dvds = pgTable("DVDs", {
   movie_id: integer("movie_id")
     .notNull()
     .references(() => movies.id),
+  rentable: boolean("rentable").notNull().default(true),
 });
 
 // Define Genres table
@@ -42,10 +44,10 @@ export const moviesgenres = pgTable(
   {
     movie_id: integer("movie_id")
       .notNull()
-      .references(() => movies.id),
+      .references(() => movies.id, { onDelete: 'cascade' }),
     genre_id: integer("genre_id")
       .notNull()
-      .references(() => genres.id),
+      .references(() => genres.id, { onDelete: 'cascade' }),
   },
   (table) => {
     return {
