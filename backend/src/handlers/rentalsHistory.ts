@@ -36,7 +36,7 @@ export async function getHistoricalRentals(req: Request, res: Response) {
     const filters: SQLWrapper[] = [];
     
     if (movie_id) {
-      query.leftJoin(dvds, eq(rentalshistory.dvd_id, dvds.id));
+      query.innerJoin(dvds, eq(rentalshistory.dvd_id, dvds.id));
       filters.push(eq(dvds.movie_id, Number(movie_id)));
     }
     if (late === "true") {
