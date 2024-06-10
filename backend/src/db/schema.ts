@@ -10,7 +10,7 @@ import {
   primaryKey,
   pgView,
   bigint,
-  boolean,
+  boolean
 } from "drizzle-orm/pg-core";
 
 // Define DVDs table
