@@ -6,6 +6,7 @@ import dvds from "./dvds";
 import users from "./users";
 import rentals from "./rentals";
 import rentalsHistory from "./rentalsHistory";
+import moviesReport from "./moviesReport"
 
 const mountRoutes = (app: Express) => {
   app.use("/movies", movies);
@@ -14,6 +15,7 @@ const mountRoutes = (app: Express) => {
   app.use("/users", users);
   app.use("/rentals", rentals);
   app.use("/rentals_history", rentalsHistory);
+  app.use("/movies_report", moviesReport);
 };
 
 export default mountRoutes;
