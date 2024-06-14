@@ -14,10 +14,9 @@ services:
       - backend
     build: ./frontend
     ports:
-      - 3000:3000
+      - 5173:5173
     volumes:
-      - ./frontend/src:/frontend/src
-      - ./frontend/public:/frontend/public
+      - ./frontend:/frontend
 
   backend:
     depends_on:
