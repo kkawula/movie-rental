@@ -7,6 +7,7 @@ import users from "./users";
 import rentals from "./rentals";
 import rentalsHistory from "./rentalsHistory";
 import moviesReport from "./moviesReport"
+import genresReport from "./genresReport"
 
 const mountRoutes = (app: Express) => {
   app.use("/movies", movies);
@@ -16,6 +17,7 @@ const mountRoutes = (app: Express) => {
   app.use("/rentals", rentals);
   app.use("/rentals_history", rentalsHistory);
   app.use("/movies_report", moviesReport);
+  app.use("/genres_report", genresReport);
 };
 
 export default mountRoutes;
