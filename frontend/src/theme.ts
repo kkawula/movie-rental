@@ -21,7 +21,8 @@ const myColor: MantineColorsTuple = [
 const themeOverride = createTheme({
   colors: {
     myColor
-  }
+  },
+  defaultRadius: '0.5rem',
 });
 
 export const theme = mergeMantineTheme(DEFAULT_THEME, themeOverride);

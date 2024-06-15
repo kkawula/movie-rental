@@ -1,12 +1,12 @@
 import "@mantine/core/styles.css";
-import { MantineProvider } from "@mantine/core";
+import { Container, MantineProvider } from "@mantine/core";
 import { theme } from "../theme";
 import { AppShell, Burger, Group, UnstyledButton, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import classes from "./Layout.module.css";
+import classes from "./Layout/Layout.module.css";
 import { IconDisc } from "@tabler/icons-react";
 import { Link, Outlet } from "react-router-dom";
-import Menu from "./Menu";
+import Menu from "./Layout/Menu";
 
 export default function Layout() {
   const [opened, { toggle }] = useDisclosure();
@@ -51,7 +51,9 @@ export default function Layout() {
         </AppShell.Navbar>
 
         <AppShell.Main>
-          <Outlet />
+          <Container size="lg">
+            <Outlet />
+          </Container>
         </AppShell.Main>
       </AppShell>
     </MantineProvider>
