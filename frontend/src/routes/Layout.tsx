@@ -30,7 +30,7 @@ export default function Layout() {
               size="sm"
             />
             <Group justify="space-between" style={{ flex: 1 }}>
-              <UnstyledButton component={Link} to={"/undefined"}>
+              <UnstyledButton component={Link} to={"/"}>
                 <Group>
                   <IconDisc size={36} stroke={1.5} />
                   <Text size="h3" className={classes.title}>
