@@ -240,17 +240,31 @@ Parametr `:id` powinien być liczbą całkowitą odpowiadającą ID filmu.
 
 Umożliwia uzyskanie listy gatunków, do którego należy dany film. Zostają zwrócone w postaci:
 
-<!-- TODO: naprawić endpoint, dopisać dokumentacje -->
+Przykład wywołania:
+`/movies/3/genres`
+
+```json
+[
+  {
+    "id": 4,
+    "name": "Sci-Fi"
+  },
+  {
+    "id": 5,
+    "name": "Adventure"
+  }
+]
+```
 
 #### /movies/:movie_id/genres/:genre_id
 
 ##### PUT
 
-<!-- TODO -->
+Umożliwia dodanie gatunku `genre_id` do filmu `movie_id`.
 
 ##### DELETE
 
-<!-- TODO -->
+Umożliwia usunięcie gatunku `genre_id` z filmu `movie_id`.
 
 ### Płyty
 

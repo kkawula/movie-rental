@@ -1,7 +1,7 @@
 import { Request, Response } from "express-serve-static-core";
 import { db } from "../db";
 import { eq, and } from "drizzle-orm";
-import { moviesgenres, genres, Genre } from "../db/schema";
+import { moviesgenres, genres } from "../db/schema";
 
 export async function getMovieGenres(req: Request, res: Response) {
   const { movieId } = req.params;
@@ -12,7 +12,9 @@ export async function getMovieGenres(req: Request, res: Response) {
       .from(moviesgenres)
       .innerJoin(genres, eq(moviesgenres.genre_id, genres.id))
       .where(eq(moviesgenres.movie_id, Number(movieId)));
-    res.send(result);
+
+    const genreList = result.map((row) => row.Genres);
+    res.send(genreList);
   } catch (err) {
     res.status(500).send("Error getting movie genres");
   }
