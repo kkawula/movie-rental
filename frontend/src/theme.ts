@@ -25,4 +25,4 @@ const themeOverride = createTheme({
   defaultRadius: '0.5rem',
 });
 
-export const theme = mergeMantineTheme(DEFAULT_THEME, themeOverride);
+export const theme = themeOverride;
