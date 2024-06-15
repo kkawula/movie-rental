@@ -258,25 +258,72 @@ Umożliwia uzyskanie listy gatunków, do którego należy dany film. Zostają zw
 
 ##### GET
 
-<!-- TODO -->
+Zwraca listę wszystkich płyt w postaci:
+
+Można użyć parametru zapytania:
+
+- `movie_id=5` - zwraca płyty odpowiedniego filmu
+
+```json
+[
+    {
+        "id": 1,
+        "movie_id": 1,
+        "rentable": false
+    },
+    {
+        "id": 2,
+        "movie_id": 1,
+        "rentable": true
+    },
+    ...
+]
+```
 
 ##### POST
 
-<!-- TODO -->
+Dodawanie płyty odpowiedniego filmu:
+
+```json
+{
+  "movie_id": "X"
+}
+```
+
+Nowo dodana płyta zostanie zwróca wraz z nadanym jej ID.
 
 #### `/dvds/:id`
 
+Parametr `:id` powinien być liczbą całkowitą odpowiadającą ID gatunku.
+
 ##### GET
 
-<!-- TODO -->
+Umożliwia uzyskanie szczegółów danej płyty:
+
+```json
+{
+    "id": X,
+    "movie_id": Y,
+    "rentable": true/false
+}
+```
 
 ##### PATCH
 
-<!-- TODO -->
+Użliwia zmianę stanę płyty lub filmu na niej dostępnego
+
+```json
+{
+    "movie_id": Y,
+    "rentable": "true"
+}
+```
+
+Nie trzeba podoawać wszystkich parametrów, zwrócona płyta jest uaktualniona.
 
 ##### DELETE
 
-<!-- TODO -->
+Usuwa płytę z bazy, jeżeli płytnia nie była wcześniej nigdy wypożyczona
 
 ### Uzytkownicy
 
@@ -284,25 +331,70 @@ Umożliwia uzyskanie listy gatunków, do którego należy dany film. Zostają zw
 
 ##### GET
 
-<!-- TODO -->
+Zwraca listę wszystkich użytkoników w postaci:
+
+```json
+[
+    {
+        "id": 1,
+        "first_name": "Bernard",
+        "last_name": "Arnault",
+        "phone_number": "123456789",
+        "mail": "berand@lv.com",
+        "address": "931-947, Fifth Street 21, Dallas, California"
+    },
+    {
+        "id": 2,
+        "first_name": "Jeff",
+        "last_name": "Bezos",
+        "phone_number": "987654321",
+        "mail": "mynameisjeff@aws.com",
+        "address": "605-943, Fifth Street 18, San Antonio, Alaska"
+    },
+    ...
+]
+```
 
 ##### POST
 
-<!-- TODO -->
+Umożliwia dodanie użytwkonika do bazy. Należy go przekazać w postaci:
+
+```json
+{
+  "first_name": "...",
+  "last_name": "...",
+  "phone_number": "123456789",
+  "mail": "...@[provider].com",
+  "address": "..."
+}
+```
 
 #### `/users/:id`
 
+Parametr `:id` powinien być liczbą całkowitą odpowiadającą ID użytkownika.
+
 ##### GET
 
-<!-- TODO -->
+Umożliwia uzyskanie danych szczególnego użytkownika.
 
 ##### PATCH
 
-<!-- TODO -->
+Umożliwia zmianę danych użytkownika. Należy dostarczyć uaktualnione dane w postaci:
+
+```json
+{
+  "last_name": "...",
+  "address": "..."
+}
+```
+
+Nie trzeba podawać wszystkich parametrów.
+
+Zwrócony zostaje uaktualniony film.
 
 ##### DELETE
 
-<!-- TODO -->
+Umożliwia usunięcie użytkownika z bazy, jezeli nigdy nie wypożyczył filmu.
 
 ### Wypozyczenia
 
@@ -310,25 +402,80 @@ Umożliwia uzyskanie listy gatunków, do którego należy dany film. Zostają zw
 
 ##### GET
 
-<!-- TODO -->
+Umożliwia znalezienie aktualnie wypożyczonych płyt.
+
+Można użyć poniższych parametrów zapytania:
+
+- `late=true` lub `late=false` - filtruje wypożyczenia, które nie zostały zwrócone przed określonym terminem, a także te, które nadal mają czas na zwrot.
+- `user_id=X` - płyty wpożyczone przez użytkownika z danym ID
+- `dvd_id=Y` - informacja o wypożyczeniu płyty z danym ID
+- `movie_id=Z` - wypożycznia filmu z danym ID
+
+Przykładowe użycie parametrów:
+`/movies?movie_id=4`
+
+```json
+[
+  {
+      "id": 382,
+      "user_id": 6,
+      "dvd_id": 11,
+      "rental_date": "2024-04-10",
+      "return_deadline": "2024-05-24"
+  },
+  {
+      "id": 383,
+      "user_id": 6,
+      "dvd_id": 13,
+      "rental_date": "2024-03-25",
+      "return_deadline": "2024-05-28"
+  },
+  ...
+]
+```
 
 ##### POST
 
-<!-- TODO -->
+Umożliwia wypożyczenie płyty jeżeli ta jest dostępna, w przeciwnym razie zostanie zwrócona informacja, że płyta nie jest dostępna.
+
+```json
+{
+  "user_id": X,
+  "dvd_id": Y,
+  "return_deadline: "2077-04-20"
+}
+```
+
+Zwracany zostaje wpis do tabeli wraz z nadanym ID oraz datą wypożyczenia.
 
 #### `/rentals/:id`
 
+Parametr `:id` powinien być liczbą całkowitą odpowiadającą ID użytkownika.
+
 ##### GET
 
-<!-- TODO -->
+Zwraca wypożyczenie o danym ID
 
 ##### PATCH
 
-<!-- TODO -->
+Umożliwia zmianę parametrów wypożczenia. Należy dostarczyć uaktualnione dane w postaci:
+
+```json
+{
+  "user_id": X,
+  "dvd_id": Y,
+  "rental_date": "2024-03-30",
+  "return_deadline": "2024-05-21"
+}
+```
+
+Nie trzeba podawać wszystkich parametrów.
+
+Zwrócony zostaje uaktualniony film.
 
 ##### DELETE
 
-<!-- TODO -->
+Delete służy do zwracania płyt, wpis jest usuwany z tabeli rentals oraz przenoszony do tabeli rentals_history wraz z datą zwrotu.
 
 ### Wypozyczenia historyczne
 
@@ -336,13 +483,33 @@ Umożliwia uzyskanie listy gatunków, do którego należy dany film. Zostają zw
 
 ##### GET
 
-<!-- TODO -->
+Umożliwia wgląd do historii wypożyczeń.
+
+Można użyć poniższych parametrów zapytania:
+
+- `late=true` lub `late=false` - filtruje wypożyczenia, które nie zostały zwrócone przed określonym terminem, a także te, które nadal mają czas na zwrot.
+- `user_id=X` - płyty wpożyczone przez użytkownika z danym ID
+- `dvd_id=Y` - informacja o wypożyczeniu płyty z danym ID
+- `movie_id=Z` - wypożycznia filmu z danym ID
+
+```json
+[
+  {
+    "id": 1,
+    "user_id": 3,
+    "dvd_id": 1,
+    "rental_date": "2020-07-13",
+    "return_deadline": "2020-08-08",
+    "returned_date": "2020-08-06"
+  }
+]
+```
 
 #### `/rentals_history/:id`
 
 ##### GET
 
-<!-- TODO -->
+Zwraca wpis z historii wypożyczenia o danym ID.
 
 ### Raport filmów
 
@@ -350,16 +517,75 @@ Umożliwia uzyskanie listy gatunków, do którego należy dany film. Zostają zw
 
 ##### GET
 
-<!-- TODO -->
+Ten endpoint generuje raport na temat filmów, zwraca liczbę wypożczeń w danym okresie czasu
+
+Można użyć poniższych parametrów zapytania:
+
+- `rental_before="2024-06-20"`
+- `rental_after="2024-01-01`
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Oppenheimer",
+    "description": "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.",
+    "imdb_rate": "8.3",
+    "director": "Christopher Nolan",
+    "poster_url": "https://fwcdn.pl/fpo/28/17/10002817/8120472_1.6.jpg",
+    "rentals": 18
+  },
+  {
+    "id": 5,
+    "title": "Fight Club",
+    "description": "An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.",
+    "imdb_rate": "8.8",
+    "director": "David Fincher",
+    "poster_url": "https://fwcdn.pl/fpo/08/37/837/7549908.6.jpg",
+    "rentals": 9
+  },
+  ...
+]
+```
 
 ### Raport gatunków
 
-#### `/movies_report`
+#### `/genres_report`
 
 ##### GET
 
-<!-- TODO -->
+Ten endpoint generuje raport na temat gatunków, zwraca liczbę wypożczeń w danym okresie czasu
+
+Można użyć poniższych parametrów zapytania:
+
+- `rental_before="2024-06-20"`
+- `rental_after="2024-01-01`
+
+```json
+[
+  {
+    "id": 5,
+    "name": "Adventure",
+    "rentals": 132
+  },
+  {
+    "id": 4,
+    "name": "Sci-Fi",
+    "rentals": 154
+  },
+  {
+    "id": 10,
+    "name": "History",
+    "rentals": 64
+  },
+  ...
+]
+```
 
 ### Views
+
+<!-- TODO -->
+
+### Funkcje
 
 <!-- TODO -->

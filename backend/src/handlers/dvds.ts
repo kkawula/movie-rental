@@ -1,7 +1,7 @@
 import { Request, Response } from "express-serve-static-core";
 import { db } from "../db";
 import { eq } from "drizzle-orm";
-import { DVD, dvds } from "../db/schema";
+import { DVD, NewDVD, dvds } from "../db/schema";
 
 export async function getDVDs(req: Request, res: Response) {
   const { movie_id } = req.query;
@@ -9,9 +9,9 @@ export async function getDVDs(req: Request, res: Response) {
   if (movie_id) {
     try {
       let movieDVDs: DVD[] = await db
-      .select()
-      .from(dvds)
-      .where(eq(dvds.movie_id, Number(movie_id)));
+        .select()
+        .from(dvds)
+        .where(eq(dvds.movie_id, Number(movie_id)));
       res.send(movieDVDs);
     } catch (err) {
       res.status(500).send("Invalid movie_id");
@@ -30,7 +30,10 @@ export async function postDVD(req: Request, res: Response) {
   const movie_id: number = req.body.movie_id;
 
   try {
-    let addedDVD = await db.insert(dvds).values({ movie_id: movie_id }).returning();
+    let addedDVD = await db
+      .insert(dvds)
+      .values({ movie_id: movie_id })
+      .returning();
     res.send(addedDVD);
   } catch (err) {
     res.status(500).send("Error adding DVD");
@@ -42,9 +45,9 @@ export async function getDVD(req: Request, res: Response) {
 
   try {
     let dvd: DVD[] = await db
-    .select()
-    .from(dvds)
-    .where(eq(dvds.id, Number(id)));
+      .select()
+      .from(dvds)
+      .where(eq(dvds.id, Number(id)));
 
     if (dvd.length > 0) {
       res.send(dvd[0]);
@@ -58,7 +61,7 @@ export async function getDVD(req: Request, res: Response) {
 
 export async function updateDVD(req: Request, res: Response) {
   const { id } = req.params;
-  const updateFields: Partial<DVD> = req.body;
+  const updateFields: Partial<NewDVD> = req.body;
 
   try {
     let updatedDVD = await db
