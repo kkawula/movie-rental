@@ -273,7 +273,7 @@ Umożliwia usunięcie gatunku `genre_id` z filmu `movie_id`.
 Zwraca dostępne płyty dla filmu `movie_id`
 
 Przykładowe użycie:
-`/movies/7/availablez`
+`/movies/7/available`
 
 ```json
 [

@@ -1,16 +1,26 @@
 import { Request, Response } from "express-serve-static-core";
 import { db } from "../db";
-import { sql } from "drizzle-orm";
-import { dvds, rentals } from "../db/schema";
+import { and, eq, isNull, sql } from "drizzle-orm";
+import { dvds, movies, rentals } from "../db/schema";
 
 export async function getAvailableDvds(req: Request, res: Response) {
   const { movieId } = req.params;
   try {
-    let availableDvds = await db.execute(
-      sql`select * from ${dvds} where ${dvds.movie_id} = ${movieId} and ${dvds.rentable} = true and ${dvds.id} not in (select ${rentals.dvd_id} from ${rentals} join ${dvds} on ${dvds.id} = ${rentals.dvd_id} where ${dvds.movie_id} = ${movieId})`
-    );
+    let availableDvds = await db
+      .select({
+        id: dvds.id,
+        movie_id: dvds.movie_id,
+        rentable: dvds.rentable,
+      })
+      .from(movies)
+      .innerJoin(
+        dvds,
+        and(eq(movies.id, dvds.movie_id), eq(dvds.rentable, true))
+      )
+      .leftJoin(rentals, eq(dvds.id, rentals.dvd_id))
+      .where(and(eq(movies.id, Number(movieId)), isNull(rentals.id)));
 
-    res.send(availableDvds.rows);
+    res.send(availableDvds);
   } catch (err) {
     res.status(500).send("Error fetching available DVDs");
   }
