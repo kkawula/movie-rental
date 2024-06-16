@@ -3,7 +3,6 @@ import {
   Alert,
   Button,
   Center,
-  DefaultMantineColor,
   Grid,
   Group,
   Modal,
@@ -12,24 +11,10 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { IconAdjustments, IconInfoCircle } from "@tabler/icons-react";
-import { ClientData } from "../Clients";
+import { ClientData, ClientDataNoID, FormError } from "../Clients";
 import { useDisclosure } from "@mantine/hooks";
 import { isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { useState } from "react";
-
-interface FormError {
-  color: DefaultMantineColor;
-  title: String;
-  content: String;
-}
-
-interface ClientDataNoID {
-  first_name: String;
-  last_name: String;
-  phone_number: String;
-  mail: String;
-  address: String;
-}
 
 interface ClientProps extends ClientData {
   fetchAllData: () => void;
@@ -62,6 +47,34 @@ export default function Client(props: ClientProps) {
     open();
   }
 
+  async function deleteUser() {
+    try {
+      const response = await fetch(
+        "http://localhost:3001/users/" + String(id),
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        close();
+        fetchAllData();
+      } else {
+        setAlert({
+          color: "red",
+          title: "Error",
+          content: response.statusText + ": " + await response.text(),
+        });
+      }
+    } catch (error) {
+      setAlert({
+        color: "red",
+        title: "Error",
+        content: "Unable to send the request.",
+      });
+    }
+  }
+
   async function sendForm(values: ClientDataNoID) {
     try {
       const response = await fetch(
@@ -86,7 +99,7 @@ export default function Client(props: ClientProps) {
         setAlert({
           color: "red",
           title: "Error",
-          content: response.statusText + "\n" + response.body,
+          content: response.statusText,
         });
       }
     } catch (error) {
@@ -179,7 +192,8 @@ export default function Client(props: ClientProps) {
               key={editForm.key("address")}
               {...editForm.getInputProps("address")}
             />
-            <Group justify="flex-end" mt="md">
+            <Group justify="space-between" mt="md">
+              <Button type="button" color="red" variant="light" onClick={deleteUser}>Delete</Button>
               <Button type="submit" color="green" variant="light">
                 Submit
               </Button>
