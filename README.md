@@ -244,7 +244,16 @@ Przykład wywołania:
 `/movies/3/genres`
 
 ```json
-["Sci-Fi", "Adventure"]
+[
+  {
+    "id": 4,
+    "name": "Sci-Fi"
+  },
+  {
+    "id": 5,
+    "name": "Adventure"
+  }
+]
 ```
 
 #### /movies/:movie_id/genres/:genre_id
@@ -256,6 +265,25 @@ Umożliwia dodanie gatunku `genre_id` do filmu `movie_id`.
 ##### DELETE
 
 Umożliwia usunięcie gatunku `genre_id` z filmu `movie_id`.
+
+#### /movies/:movie_id/available
+
+##### GET
+
+Zwraca dostępne płyty dla filmu `movie_id`
+
+Przykładowe użycie:
+`/movies/7/available`
+
+```json
+[
+  {
+    "id": 18,
+    "movie_id": 7,
+    "rentable": true
+  }
+]
+```
 
 ### Płyty
 
@@ -386,6 +414,8 @@ Umożliwia uzyskanie danych szczególnego użytkownika.
 
 Umożliwia zmianę danych użytkownika. Należy dostarczyć uaktualnione dane w postaci:
 
+Przykład aktualizacji dwóch parametrów:
+
 ```json
 {
   "last_name": "...",
@@ -447,11 +477,21 @@ Umożliwia wypożyczenie płyty jeżeli ta jest dostępna, w przeciwnym razie zo
 {
   "user_id": X,
   "dvd_id": Y,
-  "return_deadline: "2077-04-20"
+  "return_deadline": "2077-04-20"
 }
 ```
 
 Zwracany zostaje wpis do tabeli wraz z nadanym ID oraz datą wypożyczenia.
+
+```json
+{
+  "id": 378,
+  "user_id": 3,
+  "dvd_id": 5,
+  "rental_date": "2024-03-30",
+  "return_deadline": "2024-05-21"
+}
+```
 
 #### `/rentals/:id`
 

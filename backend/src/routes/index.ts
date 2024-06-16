@@ -6,8 +6,8 @@ import dvds from "./dvds";
 import users from "./users";
 import rentals from "./rentals";
 import rentalsHistory from "./rentalsHistory";
-import moviesReport from "./moviesReport"
-import genresReport from "./genresReport"
+import moviesReport from "./moviesReport";
+import genresReport from "./genresReport";
 
 const mountRoutes = (app: Express) => {
   app.use("/movies", movies);

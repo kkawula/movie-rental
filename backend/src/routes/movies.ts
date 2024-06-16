@@ -13,6 +13,8 @@ import {
   deleteMovieGenre,
 } from "../handlers/movieGenres";
 
+import { getAvailableDvds } from "../handlers/availableDvds";
+
 const router = Router();
 
 router.get("/", getMovies);
@@ -26,5 +28,7 @@ router.get("/:movieId/genres", getMovieGenres);
 
 router.put("/:movieId/genres/:genreId", putMovieGenre);
 router.delete("/:movieId/genres/:genreId", deleteMovieGenre);
+
+router.get("/:movieId/available", getAvailableDvds);
 
 export default router;

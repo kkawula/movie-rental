@@ -13,7 +13,7 @@ export async function getMovieGenres(req: Request, res: Response) {
       .innerJoin(genres, eq(moviesgenres.genre_id, genres.id))
       .where(eq(moviesgenres.movie_id, Number(movieId)));
 
-    const genreList = result.map((row) => row.Genres.name);
+    const genreList = result.map((row) => row.Genres);
     res.send(genreList);
   } catch (err) {
     res.status(500).send("Error getting movie genres");

@@ -1,6 +1,14 @@
 import { Request, Response } from "express-serve-static-core";
 import { db } from "../db";
-import { movies, dvds, rentals, rentalshistory, Movie, genres, moviesgenres, Genre } from "../db/schema";
+import {
+  movies,
+  dvds,
+  rentals,
+  rentalshistory,
+  genres,
+  moviesgenres,
+  Genre,
+} from "../db/schema";
 import { eq, and, gte, lte, count, SQLWrapper } from "drizzle-orm";
 
 export async function getGenresReport(req: Request, res: Response) {
@@ -45,10 +53,7 @@ export async function getGenresReport(req: Request, res: Response) {
     .leftJoin(movies, eq(moviesgenres.movie_id, movies.id))
     .leftJoin(dvds, eq(movies.id, dvds.movie_id))
     .leftJoin(rentalsUnion, and(...filters))
-    .groupBy(
-      genres.id,
-      genres.name
-    );
+    .groupBy(genres.id, genres.name);
 
   try {
     let genres: Genre[] = await query;
