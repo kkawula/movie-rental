@@ -23,8 +23,10 @@ export async function getMovie(req: Request, res: Response) {
 }
 
 export async function getMovies(req: Request, res: Response) {
-  const { genre_ids } = req.body;
-  const { availability, title, description, imdb_gte, imdb_lte, director } = req.query; 
+  const { availability, title, description, imdb_gte, imdb_lte, director, genre_ids } = req.query; 
+
+  let genre_ids_parsed = genre_ids ? JSON.parse(String(genre_ids)) : null;
+
   const moviesAvailabilityColumns = {
     id: moviesAvailabilityView.id,
     title: moviesAvailabilityView.title,
@@ -60,21 +62,21 @@ export async function getMovies(req: Request, res: Response) {
       filters.push(lte(moviesAvailabilityView.imdb_rate, imdb_lte.toString()));
     }
 
-    if (genre_ids) {
+    if (genre_ids_parsed) {
       query.innerJoin(moviesgenres, eq(moviesAvailabilityView.id, moviesgenres.movie_id))
-      if (Array.isArray(genre_ids)) {
-        filters.push(inArray(moviesgenres.genre_id, genre_ids));
+      if (Array.isArray(genre_ids_parsed)) {
+        filters.push(inArray(moviesgenres.genre_id, genre_ids_parsed));
       } else {
-        filters.push(eq(moviesgenres.genre_id, genre_ids));
+        filters.push(eq(moviesgenres.genre_id, genre_ids_parsed));
       }
     }
   
     query.where(and(...filters));
     
-    if (genre_ids && Array.isArray(genre_ids)) {
+    if (genre_ids_parsed && Array.isArray(genre_ids_parsed)) {
       query
         .groupBy((columns) => Object.values(columns))
-        .having(({}) => eq(count(moviesgenres.genre_id), genre_ids.length));
+        .having(({}) => eq(count(moviesgenres.genre_id), genre_ids_parsed.length));
     }
 
     let requestedMovies: Movie[] = await query;

@@ -1,5 +1,5 @@
 import "@mantine/core/styles.css";
-import { Container, MantineProvider } from "@mantine/core";
+import { Container, MantineProvider, ScrollArea } from "@mantine/core";
 import { theme } from "../theme";
 import { AppShell, Burger, Group, UnstyledButton, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -51,9 +51,11 @@ export default function Layout() {
         </AppShell.Navbar>
 
         <AppShell.Main>
-          <Container size="lg">
-            <Outlet />
-          </Container>
+          <ScrollArea h="90vh">
+            <Container size="lg">
+              <Outlet />
+            </Container>
+          </ScrollArea>
         </AppShell.Main>
       </AppShell>
     </MantineProvider>

@@ -7,6 +7,7 @@ import Layout from "./routes/Layout";
 import NoMatch from "./routes/NoMatch";
 import Reports from "./routes/Reports";
 import Movies from "./routes/Movies";
+import Rentals from "./routes/Rentals";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="/users" element={<Clients />} />
           <Route path="/movies" element={<Movies />} />
+          <Route path="/rentals" element={<Rentals />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
