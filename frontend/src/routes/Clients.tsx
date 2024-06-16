@@ -126,7 +126,7 @@ export default function Clients() {
         setAlert({
           color: "red",
           title: "Error",
-          content: response.statusText,
+          content: response.statusText + ": " + await response.text(),
         });
       }
     } catch (error) {

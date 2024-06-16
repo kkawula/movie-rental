@@ -112,7 +112,8 @@ Można użyć poniższych parametrów zapytania:
 - `description=XYZ` - opis zawiera fragment `XYZ`, porównanie niewrażliwe na wielkość liter,
 - `imdb_gte=X.Y` - ocena filmu jest większa bądź równa liczbie `X.Y`, np. `6.5`,
 - `imdb_lte=X.Y` - ocena filmu jest mniejsza bądź równa liczbie `X.Y`, np. `6.5`,
-- `director=XYZ` - imię i nazwisko reżysera zawiera ragment `XYZ`, porównanie niewrażliwe na wielkość liter.
+- `director=XYZ` - imię i nazwisko reżysera zawiera ragment `XYZ`, porównanie niewrażliwe na wielkość liter,
+- `genre_ids=[X,Y,...]` - filmy, które należą do gatunków o podanych ID.
 
 Przykładowe użycie parametrów:
 `/movies?director=Tarantino&imdb_gte=8.0`
@@ -132,23 +133,8 @@ Przykładowe użycie parametrów:
 ]
 ```
 
-Dodatkowo, można wyszukać filmy, które należą do danego/kilku danych gatunków. Należy je dostarczyć w zapytaniu w postaci:
-
-```json
-{
-  "genre_ids" = [...]
-}
-```
-
-gdzie w miejsce `...` należy wpisać ID gatunków, np. zapytanie z poniższymi gatunkami:
-
-```json
-{
-  "genre_ids" = [4, 5]
-}
-```
-
-zwraca:
+Przykładowe użycie parametrów:
+`/movies?genre_ids=[4, 5]
 
 ```json
 [

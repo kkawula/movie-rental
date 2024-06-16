@@ -99,7 +99,7 @@ export default function Client(props: ClientProps) {
         setAlert({
           color: "red",
           title: "Error",
-          content: response.statusText,
+          content: response.statusText + ": " + await response.text(),
         });
       }
     } catch (error) {

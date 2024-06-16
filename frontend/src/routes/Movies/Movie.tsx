@@ -76,20 +76,26 @@ export default function Movie(props: MovieProps) {
           <Image src={props.poster_url} />
         </Card.Section>
         <Space h="lg" />
-        <Group justify="space-between">
-          <Title order={3}>{props.title}</Title>
-          <Badge variant="light" color={getColor()} size="lg">
-            {props.imdb_rate}
-          </Badge>
-        </Group>
+        <Grid columns={4}>
+          <Grid.Col span={3}>
+            <Title order={3}>{props.title}</Title>
+          </Grid.Col>
+          <Grid.Col span={1}>
+            <Flex w="100%" justify="flex-end">
+              <Badge variant="light" color={getColor()} size="lg">
+                {props.imdb_rate}
+              </Badge>
+            </Flex>
+          </Grid.Col>
+        </Grid>
       </Card>
 
       <Modal opened={opened} onClose={close} title={props.title} size="auto">
-        <Grid m="lg">
-          <Grid.Col span={5}>
-            <Image src={props.poster_url} />
+        <Grid m="lg" w="50vw">
+          <Grid.Col span={4}>
+            <Image src={props.poster_url} w="100%" />
           </Grid.Col>
-          <Grid.Col span={7} p="lg">
+          <Grid.Col span={8} p="lg">
             <Stack justify="flex-start">
               <Group justify="space-between">
                 <Title order={2}>{props.title}</Title>
@@ -102,7 +108,11 @@ export default function Movie(props: MovieProps) {
               <Flex gap="sm">
                 {genres
                   ? genres.map((genre) => (
-                      <Badge color="blue" variant="light" key={(String(genre.id) + String(props.id)) as Key}>
+                      <Badge
+                        color="blue"
+                        variant="light"
+                        key={(String(genre.id) + String(props.id)) as Key}
+                      >
                         {genre.name}
                       </Badge>
                     ))
