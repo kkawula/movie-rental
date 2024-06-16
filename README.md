@@ -266,6 +266,25 @@ Umożliwia dodanie gatunku `genre_id` do filmu `movie_id`.
 
 Umożliwia usunięcie gatunku `genre_id` z filmu `movie_id`.
 
+#### /movies/:movie_id/available
+
+##### GET
+
+Zwraca dostępne płyty dla filmu `movie_id`
+
+Przykładowe użycie:
+`/movies/7/availablez`
+
+```json
+[
+  {
+    "id": 18,
+    "movie_id": 7,
+    "rentable": true
+  }
+]
+```
+
 ### Płyty
 
 #### `/dvds`
@@ -471,7 +490,7 @@ Zwracany zostaje wpis do tabeli wraz z nadanym ID oraz datą wypożyczenia.
   "dvd_id": 5,
   "rental_date": "2024-03-30",
   "return_deadline": "2024-05-21"
-},
+}
 ```
 
 #### `/rentals/:id`
