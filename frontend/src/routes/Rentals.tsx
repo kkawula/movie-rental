@@ -7,21 +7,22 @@ import {
   Group,
   Loader,
   Modal,
-  MultiSelect,
   NumberInput,
   Stack,
   TextInput,
   Title,
   isNumberLike,
   useCombobox,
+  Tabs,
 } from "@mantine/core";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Key, useEffect } from "react";
 import { IconInfoCircle } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
-import { isEmail, isNotEmpty, useForm } from "@mantine/form";
+import { isNotEmpty, useForm } from "@mantine/form";
 
 import Rental from "./Rentals/Rental";
+import HistoryRental from "./Rentals/HistoryRental";
 import { DateInput } from "@mantine/dates";
 
 export interface RentalData {
@@ -30,6 +31,15 @@ export interface RentalData {
   dvd_id: String;
   rental_date: string;
   return_deadline: string;
+}
+
+export interface HistoryRentalData {
+  id: Number;
+  user_id: String;
+  dvd_id: String;
+  rental_date: string;
+  return_deadline: string;
+  returned_date: string;
 }
 
 export interface RentalDataNoID {
@@ -65,9 +75,9 @@ export default function Rentals() {
   const [movieComboValue, setmovieComboValue] = useState("");
   const [dvdComboValue, setdvdComboValue] = useState("");
   const [data, setData] = useState<RentalData[]>([]);
+  const [historyData, setHistoryData] = useState<HistoryRentalData[]>([]);
   const [movieData, setMovieData] = useState<MovieData[]>([]);
   const [availableDvds, setAvailableDvds] = useState<DVD[]>([]);
-  const selectedMovie = useRef<MovieData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [opened, { open, close }] = useDisclosure(false);
@@ -95,6 +105,29 @@ export default function Rentals() {
   }
 
   useEffect(fetchAllData, []);
+
+  function fetchAllHistoryData() {
+    const apiUrl = "http://localhost:3001/rentals_history";
+
+    const fetchHistoryData = async () => {
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const jsonData = await response.json();
+        setHistoryData(jsonData);
+      } catch (error) {
+        setError((error as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistoryData();
+  }
+
+  useEffect(fetchAllHistoryData, []);
 
   function fetchMovieData() {
     const apiUrl = "http://localhost:3001/movies";
@@ -239,15 +272,37 @@ export default function Rentals() {
             New rental
           </Button>
         </Group>
-        <Stack align="stretch" justify="flex-start" gap="md" px={30}>
-          {data.map((rental) => (
-            <Rental
-              {...rental}
-              key={rental.id as Key}
-              fetchAllData={fetchAllData}
-            />
-          ))}
-        </Stack>
+        <Tabs defaultValue="active">
+          <Tabs.List>
+            <Tabs.Tab value="active" color="green">
+              Active
+            </Tabs.Tab>
+            <Tabs.Tab value="history" color="yellow">
+              History
+            </Tabs.Tab>
+          </Tabs.List>
+
+          <Tabs.Panel value="active" pt={10}>
+            <Stack align="stretch" justify="flex-start" gap="md" px={30}>
+              {data.map((rental) => (
+                <Rental
+                  {...rental}
+                  key={rental.id as Key}
+                  fetchAllData={fetchAllData}
+                />
+              ))}
+            </Stack>
+          </Tabs.Panel>
+          <Tabs.Panel value="history" pt={10}>
+            <Stack align="stretch" justify="flex-start" gap="md" px={30}>
+              {historyData.map((rental) => (
+                <HistoryRental {...rental} key={rental.id as Key} />
+              ))}
+            </Stack>
+          </Tabs.Panel>
+          <Tabs.Panel value="settings">Settings tab content</Tabs.Panel>
+        </Tabs>
+
         <Modal opened={opened} onClose={close} title="New rent">
           <form onSubmit={newForm.onSubmit(sendForm)}>
             <Stack gap={10}>
@@ -271,7 +326,7 @@ export default function Rentals() {
                 {...newForm.getInputProps("user_id")}
               />
               <Combobox
-                onOptionSubmit={(optionValue, optionProps) => {
+                onOptionSubmit={(_optionValue, optionProps) => {
                   setmovieComboValue(optionProps.children as string);
                   movieCombobox.closeDropdown();
                   console.log(optionProps);
@@ -306,7 +361,7 @@ export default function Rentals() {
               </Combobox>
 
               <Combobox
-                onOptionSubmit={(optionValue, optionProps) => {
+                onOptionSubmit={(_optionValue, optionProps) => {
                   setdvdComboValue(optionProps.children as string);
                   newForm.setFieldValue("dvd_id", Number(optionProps.value));
                   dvdCombobox.closeDropdown();
