@@ -47,7 +47,6 @@ export default function Clients() {
   const [opened, { open, close }] = useDisclosure(false);
   const [alert, setAlert] = useState<FormError | undefined>(undefined);
 
-
   function fetchAllData() {
     const apiUrl = "http://localhost:3001/users";
 
@@ -69,7 +68,6 @@ export default function Clients() {
     fetchData();
   }
 
-
   useEffect(fetchAllData, []);
 
   const initialValues: ClientDataNoID = {
@@ -77,7 +75,7 @@ export default function Clients() {
     last_name: null,
     phone_number: null,
     mail: null,
-    address: null
+    address: null,
   };
 
   const newForm = useForm({
@@ -87,7 +85,10 @@ export default function Clients() {
       first_name: isNotEmpty("Enter client's first name"),
       last_name: isNotEmpty("Enter client's last name"),
       phone_number: (value: String | null) =>
-        value === null || value.length < 7 || value.length > 15 || !value.match(/^[0-9]{7,15}$/)
+        value === null ||
+        value.length < 7 ||
+        value.length > 15 ||
+        !value.match(/^[0-9]{7,15}$/)
           ? "Invalid number"
           : null,
       mail: isEmail("Invalid email address"),
@@ -103,16 +104,13 @@ export default function Clients() {
 
   async function sendForm(values: ClientDataNoID) {
     try {
-      const response = await fetch(
-        "http://localhost:3001/users/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(values),
-        }
-      );
+      const response = await fetch("http://localhost:3001/users/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
 
       if (response.ok) {
         setAlert({
@@ -126,7 +124,7 @@ export default function Clients() {
         setAlert({
           color: "red",
           title: "Error",
-          content: response.statusText + ": " + await response.text(),
+          content: response.statusText + ": " + (await response.text()),
         });
       }
     } catch (error) {
@@ -161,7 +159,12 @@ export default function Clients() {
       <Stack align="stretch" justify="flex-start" gap="md" px={30}>
         <Group justify="space-between">
           <Title order={1}>Clients</Title>
-          <Button type="button" color="green" variant="light" onClick={openForm}>
+          <Button
+            type="button"
+            color="green"
+            variant="light"
+            onClick={openForm}
+          >
             New client
           </Button>
         </Group>
