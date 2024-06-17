@@ -329,7 +329,6 @@ export default function Rentals() {
                 onOptionSubmit={(_optionValue, optionProps) => {
                   setmovieComboValue(optionProps.children as string);
                   movieCombobox.closeDropdown();
-                  console.log(optionProps);
                   fetchAvailableDvds(Number(optionProps.value));
                 }}
                 store={movieCombobox}
