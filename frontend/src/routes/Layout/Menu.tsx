@@ -3,13 +3,13 @@ import { NavLink } from "react-router-dom";
 import classes from "./Layout.module.css";
 
 interface MenuProps {
-    onClick?: () => void
+  onClick?: () => void;
 }
 
 export default function Menu({ onClick }: MenuProps) {
   return (
     <>
-      <NavLink
+      {/* <NavLink
         className={({ isActive }) =>
           isActive ? classes.control_active : classes.control
         }
@@ -17,7 +17,7 @@ export default function Menu({ onClick }: MenuProps) {
         onClick={onClick ? onClick : undefined}
       >
         <UnstyledButton>Home</UnstyledButton>
-      </NavLink>
+      </NavLink> */}
       <NavLink
         className={({ isActive }) =>
           isActive ? classes.control_active : classes.control
