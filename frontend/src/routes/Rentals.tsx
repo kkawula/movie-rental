@@ -14,6 +14,7 @@ import {
   isNumberLike,
   useCombobox,
   Tabs,
+  Pagination,
 } from "@mantine/core";
 import { useState } from "react";
 import { Key, useEffect } from "react";
@@ -115,8 +116,11 @@ export default function Rentals() {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        const jsonData = await response.json();
-        setHistoryData(jsonData);
+        const jsonData: HistoryRentalData[] = await response.json();
+        const sortedJsonData = jsonData.sort(
+          (a, b) => (a.id as number) - (b.id as number)
+        );
+        setHistoryData(sortedJsonData);
       } catch (error) {
         setError((error as Error).message);
       } finally {
@@ -212,6 +216,8 @@ export default function Rentals() {
           content: "Successfully rented dvd.",
         });
         newForm.reset();
+        setdvdComboValue("");
+        setmovieComboValue("");
         fetchAllData();
       } else {
         setAlert({
@@ -240,6 +246,13 @@ export default function Rentals() {
       {dvd.id}
     </Combobox.Option>
   ));
+
+  // Pagination
+  const [activeTab, setActiveTab] = useState<string | null>("active");
+  const [activePage, setPage] = useState<number>(1);
+  const itemsPerPage: number = 10;
+  const start: number = (activePage - 1) * itemsPerPage;
+  const end: number = start + itemsPerPage;
 
   if (loading)
     return (
@@ -272,7 +285,13 @@ export default function Rentals() {
             New rental
           </Button>
         </Group>
-        <Tabs defaultValue="active">
+        <Tabs
+          value={activeTab}
+          defaultValue="active"
+          onChange={(newTab) => (
+            setActiveTab(newTab), setPage(1), console.log(activeTab)
+          )}
+        >
           <Tabs.List>
             <Tabs.Tab value="active" color="green">
               Active
@@ -284,24 +303,37 @@ export default function Rentals() {
 
           <Tabs.Panel value="active" pt={10}>
             <Stack align="stretch" justify="flex-start" gap="md" px={30}>
-              {data.map((rental) => (
+              {data.slice(start, end).map((rental) => (
                 <Rental
                   {...rental}
                   key={rental.id as Key}
                   fetchAllData={fetchAllData}
+                  fetchAllHistoryData={fetchAllHistoryData}
                 />
               ))}
             </Stack>
           </Tabs.Panel>
           <Tabs.Panel value="history" pt={10}>
             <Stack align="stretch" justify="flex-start" gap="md" px={30}>
-              {historyData.map((rental) => (
+              {historyData.slice(start, end).map((rental) => (
                 <HistoryRental {...rental} key={rental.id as Key} />
               ))}
             </Stack>
           </Tabs.Panel>
-          <Tabs.Panel value="settings">Settings tab content</Tabs.Panel>
         </Tabs>
+        <Center>
+          <Pagination
+            total={
+              (activeTab === "active" ? data.length : historyData.length) /
+                itemsPerPage +
+              1
+            }
+            value={activePage}
+            onChange={setPage}
+            mt="sm"
+            color="teal"
+          />
+        </Center>
 
         <Modal opened={opened} onClose={close} title="New rent">
           <form onSubmit={newForm.onSubmit(sendForm)}>

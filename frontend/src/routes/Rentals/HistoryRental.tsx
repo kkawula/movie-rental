@@ -1,6 +1,6 @@
-import { ActionIcon, Grid, Group, useMantineTheme, Badge } from "@mantine/core";
-import { IconArrowForwardUp, IconAdjustments } from "@tabler/icons-react";
+import { Grid, useMantineTheme, Badge } from "@mantine/core";
 import { HistoryRentalData } from "../Rentals";
+import { useRef } from "react";
 
 function DaysBetweenDates(inDate1: string, inDate2: string): number {
   let date1 = new Date(inDate1);
@@ -15,8 +15,9 @@ function DaysBetweenDates(inDate1: string, inDate2: string): number {
 
 export default function Rental(props: HistoryRentalData) {
   const theme = useMantineTheme();
-  const { id, ...data } = props;
-
+  const daysLeft = useRef(
+    DaysBetweenDates(props.returned_date, props.return_deadline)
+  );
   return (
     <>
       <Grid
@@ -37,16 +38,10 @@ export default function Rental(props: HistoryRentalData) {
         <Grid.Col span={2}>{props.return_deadline}</Grid.Col>
         <Grid.Col span={2}>{props.returned_date}</Grid.Col>
         <Grid.Col span={2}>
-          {DaysBetweenDates(props.returned_date, props.return_deadline) < 0 ? (
-            <Badge color="red">
-              {DaysBetweenDates(props.returned_date, props.return_deadline)}{" "}
-              days overdue
-            </Badge>
+          {daysLeft.current < 0 ? (
+            <Badge color="red">{-1 * daysLeft.current} days overdue</Badge>
           ) : (
-            <Badge color="green">
-              {DaysBetweenDates(props.returned_date, props.return_deadline)}{" "}
-              days left
-            </Badge>
+            <Badge color="green">{daysLeft.current} days left</Badge>
           )}
         </Grid.Col>
       </Grid>

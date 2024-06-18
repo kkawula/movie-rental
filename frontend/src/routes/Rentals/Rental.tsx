@@ -1,6 +1,7 @@
 import { ActionIcon, Grid, Group, useMantineTheme, Badge } from "@mantine/core";
-import { IconArrowForwardUp, IconAdjustments } from "@tabler/icons-react";
+import { IconArrowForwardUp } from "@tabler/icons-react";
 import { RentalData } from "../Rentals";
+import { useRef } from "react";
 
 function DaysBetweenDates(inDate1: string): number {
   let date1 = new Date();
@@ -15,11 +16,13 @@ function DaysBetweenDates(inDate1: string): number {
 
 interface RentalProps extends RentalData {
   fetchAllData: () => void;
+  fetchAllHistoryData: () => void;
 }
 
 export default function Rental(props: RentalProps) {
   const theme = useMantineTheme();
-  const { id, fetchAllData, ...data } = props;
+  const { fetchAllData, fetchAllHistoryData } = props;
+  const daysLeft = useRef(DaysBetweenDates(props.return_deadline));
 
   function returnDvd() {
     const apiUrl = "http://localhost:3001/rentals/" + props.id;
@@ -39,6 +42,7 @@ export default function Rental(props: RentalProps) {
     };
 
     fetchData();
+    fetchAllHistoryData();
   }
 
   return (
@@ -60,25 +64,15 @@ export default function Rental(props: RentalProps) {
         <Grid.Col span={2}>{props.rental_date}</Grid.Col>
         <Grid.Col span={2}>{props.return_deadline}</Grid.Col>
         <Grid.Col span={2}>
-          {DaysBetweenDates(props.return_deadline) < 0 ? (
-            <Badge color="red">
-              {DaysBetweenDates(props.return_deadline)} days overdue
-            </Badge>
+          {daysLeft.current < 0 ? (
+            <Badge color="red">{-1 * daysLeft.current} days overdue</Badge>
           ) : (
-            <Badge color="green">
-              {DaysBetweenDates(props.return_deadline)} days left
-            </Badge>
+            <Badge color="green">{daysLeft.current} days left</Badge>
           )}
         </Grid.Col>
 
         <Grid.Col span={1}>
           <Group>
-            <ActionIcon variant="filled" color="dark" aria-label="Settings">
-              <IconAdjustments
-                style={{ width: "70%", height: "70%" }}
-                stroke={1.5}
-              />
-            </ActionIcon>
             <ActionIcon variant="filled" color="teal" aria-label="Return">
               <IconArrowForwardUp
                 style={{ width: "70%", height: "70%" }}
