@@ -118,7 +118,7 @@ export default function Rentals() {
         }
         const jsonData: HistoryRentalData[] = await response.json();
         const sortedJsonData = jsonData.sort(
-          (a, b) => (a.id as number) - (b.id as number)
+          (a, b) => (b.id as number) - (a.id as number)
         );
         setHistoryData(sortedJsonData);
       } catch (error) {
