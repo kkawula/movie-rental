@@ -622,4 +622,41 @@ Można użyć poniższych parametrów zapytania:
 
 ### Views
 
-<!-- TODO -->
+Widok, który pokazuje statystki płyt dla danego filmu.
+
+- `no_dvds` - liczba wszystkich płyt danego filmu, niezależnie czy jest wypożyczalna czy nie (rentable)
+- `rented` - liczba wszystkich aktualnie wypożyczonych płyt danego filmu, niezależnie czy jest wypożyczalna czy nie (rentable)
+- `available` - liczba dostępnych płyt, definiowana jako różnica między liczbą wszystkich wypożyczalnych płyt a liczbą aktualnie wypożyczonych wypożyczalnych płyt
+
+```sql
+create view "MoviesAvailability"
+            (id, title, description, imdb_rate, director, poster_url, no_dvds, rented, available) as
+SELECT total_movies.id,
+       total_movies.title,
+       total_movies.description,
+       total_movies.imdb_rate,
+       total_movies.director,
+       total_movies.poster_url,
+       total_movies.no_dvds,
+       total_movies.rented,
+       COALESCE(rentable_movies.available, 0::bigint) AS available
+FROM (SELECT m.id,
+             m.title,
+             m.description,
+             m.imdb_rate,
+             m.director,
+             m.poster_url,
+             count(dd.id)    AS no_dvds,
+             count(r.dvd_id) AS rented
+      FROM "Movies" m
+               LEFT JOIN "DVDs" dd ON m.id = dd.movie_id
+               LEFT JOIN "Rentals" r ON dd.id = r.dvd_id
+      GROUP BY m.id, m.title) total_movies
+         LEFT JOIN (SELECT m.id,
+                           count(dd.id) - count(r.dvd_id) AS available
+                    FROM "Movies" m
+                             LEFT JOIN "DVDs" dd ON m.id = dd.movie_id
+                             LEFT JOIN "Rentals" r ON dd.id = r.dvd_id
+                    WHERE dd.rentable = true
+                    GROUP BY m.id) rentable_movies ON total_movies.id = rentable_movies.id;
+```
