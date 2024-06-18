@@ -1,16 +1,34 @@
 import { Request, Response } from "express-serve-static-core";
 import { db } from "../db";
-import { Movie, NewMovie, movies, moviesAvailabilityView, moviesgenres } from "../db/schema";
-import { SQLWrapper, eq, and, ilike, gte, lte, gt, desc, or, count, inArray } from "drizzle-orm";
+import {
+  Movie,
+  NewMovie,
+  movies,
+  moviesAvailabilityView,
+  moviesgenres,
+} from "../db/schema";
+import {
+  SQLWrapper,
+  eq,
+  and,
+  ilike,
+  gte,
+  lte,
+  gt,
+  desc,
+  or,
+  count,
+  inArray,
+} from "drizzle-orm";
 
 export async function getMovie(req: Request, res: Response) {
   const { id } = req.params;
 
   try {
     let movie: Movie[] = await db
-    .select()
-    .from(movies)
-    .where(eq(movies.id, Number(id)));
+      .select()
+      .from(movies)
+      .where(eq(movies.id, Number(id)));
 
     if (movie.length > 0) {
       res.send(movie[0]);
@@ -23,7 +41,15 @@ export async function getMovie(req: Request, res: Response) {
 }
 
 export async function getMovies(req: Request, res: Response) {
-  const { availability, title, description, imdb_gte, imdb_lte, director, genre_ids } = req.query; 
+  const {
+    availability,
+    title,
+    description,
+    imdb_gte,
+    imdb_lte,
+    director,
+    genre_ids,
+  } = req.query;
 
   let genre_ids_parsed = genre_ids ? JSON.parse(String(genre_ids)) : null;
 
@@ -33,9 +59,9 @@ export async function getMovies(req: Request, res: Response) {
     description: moviesAvailabilityView.description,
     imdb_rate: moviesAvailabilityView.imdb_rate,
     director: moviesAvailabilityView.director,
-    poster_url: moviesAvailabilityView.poster_url
-  }
-  
+    poster_url: moviesAvailabilityView.poster_url,
+  };
+
   let query = db.select(moviesAvailabilityColumns).from(moviesAvailabilityView);
 
   const filters: SQLWrapper[] = [];
@@ -45,12 +71,14 @@ export async function getMovies(req: Request, res: Response) {
     } else if (availability === "false") {
       filters.push(eq(moviesAvailabilityView.available, 0));
     }
-  
+
     if (title) {
       filters.push(ilike(moviesAvailabilityView.title, `%${title}%`));
     }
     if (description) {
-      filters.push(ilike(moviesAvailabilityView.description, `%${description}%`));
+      filters.push(
+        ilike(moviesAvailabilityView.description, `%${description}%`)
+      );
     }
     if (director) {
       filters.push(ilike(moviesAvailabilityView.director, `%${director}%`));
@@ -63,20 +91,25 @@ export async function getMovies(req: Request, res: Response) {
     }
 
     if (genre_ids_parsed) {
-      query.innerJoin(moviesgenres, eq(moviesAvailabilityView.id, moviesgenres.movie_id))
+      query.innerJoin(
+        moviesgenres,
+        eq(moviesAvailabilityView.id, moviesgenres.movie_id)
+      );
       if (Array.isArray(genre_ids_parsed)) {
         filters.push(inArray(moviesgenres.genre_id, genre_ids_parsed));
       } else {
         filters.push(eq(moviesgenres.genre_id, genre_ids_parsed));
       }
     }
-  
+
     query.where(and(...filters));
-    
+
     if (genre_ids_parsed && Array.isArray(genre_ids_parsed)) {
       query
         .groupBy((columns) => Object.values(columns))
-        .having(({}) => eq(count(moviesgenres.genre_id), genre_ids_parsed.length));
+        .having(({}) =>
+          eq(count(moviesgenres.genre_id), genre_ids_parsed.length)
+        );
     }
 
     let requestedMovies: Movie[] = await query;

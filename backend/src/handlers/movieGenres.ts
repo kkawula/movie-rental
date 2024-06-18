@@ -8,13 +8,12 @@ export async function getMovieGenres(req: Request, res: Response) {
 
   try {
     const result = await db
-      .select()
+      .select({ id: genres.id, name: genres.name })
       .from(moviesgenres)
       .innerJoin(genres, eq(moviesgenres.genre_id, genres.id))
       .where(eq(moviesgenres.movie_id, Number(movieId)));
 
-    const genreList = result.map((row) => row.Genres);
-    res.send(genreList);
+    res.send(result);
   } catch (err) {
     res.status(500).send("Error getting movie genres");
   }

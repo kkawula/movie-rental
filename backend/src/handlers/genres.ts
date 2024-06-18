@@ -8,9 +8,9 @@ export async function getGenre(req: Request, res: Response) {
 
   try {
     let genre: Genre[] = await db
-    .select()
-    .from(genres)
-    .where(eq(genres.id, Number(id)));
+      .select()
+      .from(genres)
+      .where(eq(genres.id, Number(id)));
 
     if (genre.length > 0) {
       res.send(genre[0]);
@@ -23,9 +23,8 @@ export async function getGenre(req: Request, res: Response) {
 }
 
 export async function getGenres(req: Request, res: Response) {
-  let allGenres: Genre[] = await db.select().from(genres);
-
   try {
+    let allGenres: Genre[] = await db.select().from(genres);
     res.send(allGenres);
   } catch (err) {
     res.status(500).send("Error fetching genres");

@@ -179,8 +179,8 @@ CREATE TABLE IF NOT EXISTS "Users" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"first_name" varchar(128) NOT NULL,
 	"last_name" varchar(128) NOT NULL,
-	"phone_number" varchar(32) NOT NULL,
-	"mail" varchar(64) NOT NULL,
+	"phone_number" varchar(32) NOT NULL CHECK ("phone_number" ~ '^[0-9]{7,15}$'),
+	"mail" varchar(64) NOT NULL CHECK ("mail" ~ '^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$'),
 	"address" varchar(512) NOT NULL
 );
 --> statement-breakpoint
