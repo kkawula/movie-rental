@@ -24,7 +24,7 @@ export default function Rental(props: RentalProps) {
   const { fetchAllData, fetchAllHistoryData } = props;
   const daysLeft = useRef(DaysBetweenDates(props.return_deadline));
 
-  function returnDvd() {
+  async function returnDvd() {
     const apiUrl = "http://localhost:3001/rentals/" + props.id;
 
     const fetchData = async () => {
@@ -41,7 +41,7 @@ export default function Rental(props: RentalProps) {
       }
     };
 
-    fetchData();
+    await fetchData();
     fetchAllHistoryData();
   }
 
