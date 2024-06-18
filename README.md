@@ -312,11 +312,13 @@ Dodawanie płyty odpowiedniego filmu:
 
 ```json
 {
-  "movie_id": "X"
+  "movie_id": "X",
+  "rentable": true/false
 }
 ```
 
 Nowo dodana płyta zostanie zwróca wraz z nadanym jej ID.
+Możliwe jest pominięcie parametru `rentable`, domyślną wartością jest true.
 
 #### `/dvds/:id`
 
@@ -336,7 +338,7 @@ Umożliwia uzyskanie szczegółów danej płyty:
 
 ##### PATCH
 
-Użliwia zmianę stanę płyty lub filmu na niej dostępnego
+Umożliwia zmianę stanu płyty lub filmu na niej dostępnego
 
 ```json
 {
@@ -345,11 +347,11 @@ Użliwia zmianę stanę płyty lub filmu na niej dostępnego
 }
 ```
 
-Nie trzeba podoawać wszystkich parametrów, zwrócona płyta jest uaktualniona.
+Nie trzeba podawać wszystkich parametrów, zwrócona płyta jest uaktualniona.
 
 ##### DELETE
 
-Usuwa płytę z bazy, jeżeli płytnia nie była wcześniej nigdy wypożyczona
+Usuwa płytę z bazy, jeżeli płyta nie była wcześniej nigdy wypożyczona.
 
 ### Uzytkownicy
 
@@ -357,7 +359,7 @@ Usuwa płytę z bazy, jeżeli płytnia nie była wcześniej nigdy wypożyczona
 
 ##### GET
 
-Zwraca listę wszystkich użytkoników w postaci:
+Zwraca listę wszystkich użytkowników w postaci:
 
 ```json
 [
@@ -383,7 +385,7 @@ Zwraca listę wszystkich użytkoników w postaci:
 
 ##### POST
 
-Umożliwia dodanie użytwkonika do bazy. Należy go przekazać w postaci:
+Umożliwia dodanie użytkownika do bazy. Należy go przekazać w postaci:
 
 ```json
 {
@@ -401,7 +403,7 @@ Parametr `:id` powinien być liczbą całkowitą odpowiadającą ID użytkownika
 
 ##### GET
 
-Umożliwia uzyskanie danych szczególnego użytkownika.
+Umożliwia uzyskanie danych wybranego użytkownika.
 
 ##### PATCH
 
@@ -418,13 +420,13 @@ Przykład aktualizacji dwóch parametrów:
 
 Nie trzeba podawać wszystkich parametrów.
 
-Zwrócony zostaje uaktualniony film.
+Zwrócony zostaje uaktualniony użytkownik.
 
 ##### DELETE
 
-Umożliwia usunięcie użytkownika z bazy, jezeli nigdy nie wypożyczył filmu.
+Umożliwia usunięcie użytkownika z bazy, jeżeli nigdy nie wypożyczył filmu.
 
-### Wypozyczenia
+### Wypożyczenia
 
 #### `/rentals`
 
@@ -435,7 +437,7 @@ Umożliwia znalezienie aktualnie wypożyczonych płyt.
 Można użyć poniższych parametrów zapytania:
 
 - `late=true` lub `late=false` - filtruje wypożyczenia, które nie zostały zwrócone przed określonym terminem, a także te, które nadal mają czas na zwrot.
-- `user_id=X` - płyty wpożyczone przez użytkownika z danym ID
+- `user_id=X` - płyty wypożyczone przez użytkownika z danym ID
 - `dvd_id=Y` - informacja o wypożyczeniu płyty z danym ID
 - `movie_id=Z` - wypożycznia filmu z danym ID
 
@@ -474,7 +476,7 @@ Umożliwia wypożyczenie płyty jeżeli ta jest dostępna, w przeciwnym razie zo
 }
 ```
 
-Zwracany zostaje wpis do tabeli wraz z nadanym ID oraz datą wypożyczenia.
+Zwrócony zostaje wpis do tabeli wraz z nadanym ID oraz datą wypożyczenia.
 
 ```json
 {
@@ -488,7 +490,7 @@ Zwracany zostaje wpis do tabeli wraz z nadanym ID oraz datą wypożyczenia.
 
 #### `/rentals/:id`
 
-Parametr `:id` powinien być liczbą całkowitą odpowiadającą ID użytkownika.
+Parametr `:id` powinien być liczbą całkowitą odpowiadającą ID wypożyczenia.
 
 ##### GET
 
@@ -496,7 +498,7 @@ Zwraca wypożyczenie o danym ID
 
 ##### PATCH
 
-Umożliwia zmianę parametrów wypożczenia. Należy dostarczyć uaktualnione dane w postaci:
+Umożliwia zmianę parametrów wypożyczenia. Należy dostarczyć uaktualnione dane w postaci:
 
 ```json
 {
@@ -509,13 +511,13 @@ Umożliwia zmianę parametrów wypożczenia. Należy dostarczyć uaktualnione da
 
 Nie trzeba podawać wszystkich parametrów.
 
-Zwrócony zostaje uaktualniony film.
+Zwrócony zostaje uaktualnione wypożyczenie.
 
 ##### DELETE
 
 Delete służy do zwracania płyt, wpis jest usuwany z tabeli rentals oraz przenoszony do tabeli rentals_history wraz z datą zwrotu.
 
-### Wypozyczenia historyczne
+### Wypożyczenia historyczne
 
 #### `/rentals_history`
 
@@ -526,7 +528,7 @@ Umożliwia wgląd do historii wypożyczeń.
 Można użyć poniższych parametrów zapytania:
 
 - `late=true` lub `late=false` - filtruje wypożyczenia, które nie zostały zwrócone przed określonym terminem, a także te, które nadal mają czas na zwrot.
-- `user_id=X` - płyty wpożyczone przez użytkownika z danym ID
+- `user_id=X` - płyty wypożyczone przez użytkownika z danym ID
 - `dvd_id=Y` - informacja o wypożyczeniu płyty z danym ID
 - `movie_id=Z` - wypożycznia filmu z danym ID
 
@@ -547,7 +549,7 @@ Można użyć poniższych parametrów zapytania:
 
 ##### GET
 
-Zwraca wpis z historii wypożyczenia o danym ID.
+Zwraca wpis z historii wypożyczeń o danym ID.
 
 ### Raport filmów
 
@@ -570,7 +572,7 @@ Można użyć poniższych parametrów zapytania:
     "description": "The story of American scientist J. Robert Oppenheimer and his role in the development of the atomic bomb.",
     "imdb_rate": "8.3",
     "director": "Christopher Nolan",
-    "poster_url": "https://fwcdn.pl/fpo/28/17/10002817/8120472_1.6.jpg",
+    "poster_url": "www.example.com",
     "rentals": 18
   },
   {
@@ -579,7 +581,7 @@ Można użyć poniższych parametrów zapytania:
     "description": "An insomniac office worker and a devil-may-care soap maker form an underground fight club that evolves into much more.",
     "imdb_rate": "8.8",
     "director": "David Fincher",
-    "poster_url": "https://fwcdn.pl/fpo/08/37/837/7549908.6.jpg",
+    "poster_url": "www.example.com",
     "rentals": 9
   },
   ...
@@ -620,7 +622,7 @@ Można użyć poniższych parametrów zapytania:
 ]
 ```
 
-### Views
+### Widok MoviesAvailability
 
 Widok, który pokazuje statystki płyt dla danego filmu.
 

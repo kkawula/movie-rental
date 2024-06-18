@@ -27,13 +27,10 @@ export async function getDVDs(req: Request, res: Response) {
 }
 
 export async function postDVD(req: Request, res: Response) {
-  const movie_id: number = req.body.movie_id;
+  const newDVD: NewDVD = req.body;
 
   try {
-    let addedDVD = await db
-      .insert(dvds)
-      .values({ movie_id: movie_id })
-      .returning();
+    let addedDVD = await db.insert(dvds).values(newDVD).returning();
     res.send(addedDVD);
   } catch (err) {
     res.status(500).send("Error adding DVD");
