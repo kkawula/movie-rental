@@ -36,6 +36,13 @@ Planujemy wykorzystać bazę PostgreSQL, serwer Express.js z frontendem napisany
 
 Wszystkie enpointy zwracają kod 200 w przypadku sukcesu, 404 w przypadku nieznalezienia konkretnego rekordu oraz 500 w przypadku błedu serwera.
 
+## Screenshots
+
+![reports](screenshots/reports.png)
+![movies](screenshots/movies.png)
+![rentals](screenshots/rentals.png)
+![clients](screenshots/clients.png)
+
 ### Gatunki
 
 #### `/genres`
@@ -614,9 +621,5 @@ Można użyć poniższych parametrów zapytania:
 ```
 
 ### Views
-
-<!-- TODO -->
-
-### Funkcje
 
 <!-- TODO -->
