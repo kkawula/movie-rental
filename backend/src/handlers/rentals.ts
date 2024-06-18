@@ -28,12 +28,12 @@ export async function getRentals(req: Request, res: Response) {
     user_id: rentals.user_id,
     dvd_id: rentals.dvd_id,
     rental_date: rentals.rental_date,
-    return_deadline: rentals.return_deadline
-  }
+    return_deadline: rentals.return_deadline,
+  };
   try {
     let query = db.select(columns).from(rentals);
     const filters: SQLWrapper[] = [];
-    
+
     if (movie_id) {
       query.innerJoin(dvds, eq(rentals.dvd_id, dvds.id));
       filters.push(eq(dvds.movie_id, Number(movie_id)));
@@ -47,9 +47,9 @@ export async function getRentals(req: Request, res: Response) {
       filters.push(eq(rentals.user_id, Number(user_id)));
     }
     if (dvd_id) {
-      filters.push(eq(rentals.dvd_id, Number(dvd_id)))
+      filters.push(eq(rentals.dvd_id, Number(dvd_id)));
     }
-    
+
     let requestedRentals = await query.where(and(...filters));
     res.send(requestedRentals);
   } catch (err) {
@@ -60,14 +60,27 @@ export async function getRentals(req: Request, res: Response) {
 export async function postRental(req: Request, res: Response) {
   const { user_id, dvd_id, return_deadline } = req.body;
 
+  const returnDeadlineDate = new Date(return_deadline);
+  if (isNaN(returnDeadlineDate.getTime()) || returnDeadlineDate < new Date()) {
+    res
+      .status(400)
+      .send(
+        "Invalid return_deadline. It must be a valid date and later than the current time."
+      );
+    return;
+  }
+
   try {
     if (await isDvdAvailable(dvd_id)) {
-      const rental = await db.insert(rentals).values({
-        user_id,
-        dvd_id,
-        rental_date: new Date().toISOString().split("T")[0],
-        return_deadline,
-      }).returning();
+      const rental = await db
+        .insert(rentals)
+        .values({
+          user_id,
+          dvd_id,
+          rental_date: new Date().toISOString().split("T")[0],
+          return_deadline,
+        })
+        .returning();
       res.send(rental);
     } else {
       res.send("DVD is not available");
@@ -127,18 +140,19 @@ export async function deleteRental(req: Request, res: Response) {
     try {
       newRentalHistory = await db.transaction(async (tx) => {
         let newRentalHistoryTx = await tx
-        .insert(rentalshistory)
-        .values({
-          id: returnedDvd[0].id,
-          user_id: returnedDvd[0].user_id,
-          dvd_id: returnedDvd[0].dvd_id,
-          rental_date: returnedDvd[0].rental_date,
-          return_deadline: returnedDvd[0].return_deadline,
-          returned_date: new Date().toISOString().split("T")[0],
-        }).returning();
+          .insert(rentalshistory)
+          .values({
+            id: returnedDvd[0].id,
+            user_id: returnedDvd[0].user_id,
+            dvd_id: returnedDvd[0].dvd_id,
+            rental_date: returnedDvd[0].rental_date,
+            return_deadline: returnedDvd[0].return_deadline,
+            returned_date: new Date().toISOString().split("T")[0],
+          })
+          .returning();
         await tx.delete(rentals).where(eq(rentals.id, Number(id)));
         return newRentalHistoryTx;
-      })
+      });
     } catch (err) {
       console.error("Error deleting from rentals:", err);
       throw err;
