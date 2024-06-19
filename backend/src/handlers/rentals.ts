@@ -83,7 +83,7 @@ export async function postRental(req: Request, res: Response) {
         .returning();
       res.send(rental);
     } else {
-      res.send("DVD is not available");
+      res.status(500).send("DVD is not available");
     }
   } catch (err) {
     res.status(500).send("Error adding rental");
