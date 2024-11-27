@@ -1,21 +1,19 @@
-# Projekt Wypożyczalnia filmów
+# Wypożyczalnia filmów
 
-## Autorzy
+## Technologie 
 
-- Kamil Kawula, kamilkawula@student.agh.edu.pl
-- Krzysztof Ligarski, kligarski@student.agh.edu.pl
+- PostgreSQL
+- Express.js
+- ReactTS
 
-## Temat projektu
+## Schemat bazy danych
 
-Tematem projektu będzie wypożyczalnia filmów w postaci płyt DVD.
+![schemat](schemat.png)
 
-## Informację o wykorzystywanym SZBD i technologii realizacji projektu
+## Endpointy API
 
-Planujemy wykorzystać bazę PostgreSQL, serwer Express.js z frontendem napisanym w React.js.
+Wszystkie enpointy zwracają kod 200 w przypadku sukcesu, 404 w przypadku nieznalezienia konkretnego rekordu oraz 500 w przypadku błedu serwera.
 
-## Link do repozytorium
-
-[https://github.com/taylor-swif/movie-rental](https://github.com/taylor-swif/movie-rental)
 
 ## Funkcje
 
@@ -28,13 +26,6 @@ Planujemy wykorzystać bazę PostgreSQL, serwer Express.js z frontendem napisany
 - Raport wypożyczeń dla filmów w danym przedziale czasowym
 - Raport wypożyczeń dla gatunków w danym przedziale czasowym
 
-## Schemat bazy danych
-
-![schemat](schemat.png)
-
-## Endpointy API
-
-Wszystkie enpointy zwracają kod 200 w przypadku sukcesu, 404 w przypadku nieznalezienia konkretnego rekordu oraz 500 w przypadku błedu serwera.
 
 ## Screenshots
 
